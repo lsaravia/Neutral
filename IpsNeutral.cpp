@@ -194,7 +194,6 @@ void IPSNeutral::EvalCellZero(int x,int y)
 }
 
 // Not saturated hierarchical competition model
-// with probability of replacement
 // 
 void IPSNeutral::EvalCellHierarchy(int x,int y)
 {
@@ -231,12 +230,8 @@ void IPSNeutral::EvalCellHierarchy(int x,int y)
 				for(i=1; i<=NumSpecies; i++)
 					if(rnd<Sp[i].ColonizationRate)
 					{							// La reemplaza si la especie invasora es menor
-						if( actSp>i) 			// con probabilidad ReplacementRate de reemplazo
-						{
-							rnd = Rand();
-							if(rnd<Sp[0].ReplacementRate)
-								C(x,y).Specie=i;	
-						}
+						if( actSp>i) 			
+							C(x,y).Specie=i;	
 						break;
 					}
 			}
@@ -252,13 +247,7 @@ void IPSNeutral::EvalCellHierarchy(int x,int y)
 
 				EuclideanDispersal(x,y,x1,y1);
 				int & dSp= C(x1,y1).Specie;
-				if( dSp > actSp )
-				{
-					rnd = Rand();
-					if(rnd<Sp[0].ReplacementRate)
-						dSp = actSp;
-				}
-				else if(dSp==0)  
+				if( dSp > actSp  || (dSp==0) ) 
 					dSp = actSp;
 			}
         }
@@ -337,12 +326,8 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 				for(i=1; i<=NumSpecies; i++)
 					if(rnd<Sp[i].ColonizationRate)
 					{							// La reemplaza si la especie invasora es menor
-						if( actSp>i) 			// con probabilidad ReplacementRate de reemplazo
-						{
-							rnd = Rand();
-							if(rnd<Sp[0].ReplacementRate)
-								C(x,y).Specie=i;	
-						}
+						if( actSp>i) 			
+							C(x,y).Specie=i;	
 						break;
 					}
 			}
@@ -353,13 +338,7 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 				//
 				EuclideanDispersal(x,y,x1,y1);
 				int & dSp= C(x1,y1).Specie;
-				if( dSp > actSp )
-				{
-					rnd = Rand();
-					if(rnd<Sp[0].ReplacementRate)
-						dSp = actSp;
-				}
-				else if(dSp==0)  
+				if( dSp > actSp  || (dSp==0) ) 
 					dSp = actSp;
 			}		
 		}
