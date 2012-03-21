@@ -128,6 +128,25 @@ inline void IPSNeutral::EuclideanDispersal(const int &x,const int &y,int &x1,int
 	y1 = (y+ dy + DimY) % DimY;
 }
 
+//   Generate a inverse power dispersal function with parameter alfa = DispersalDistance
+//   and Xmin=1 using the inverse of the cumulative F = U ^ (-1/(alfa-1))
+//   
+inline void IPSNeutral::PowerDispersal(const int &x,const int &y,int &x1,int &y1)
+{
+	int dx,dy,dd,dis;	
+	dd=Sp[0].DispersalDistance;
+	while(true)
+	{
+		dis= pow(Rand(), -1/(dd-1));
+		double ang = Rand() * pi2;
+		dx = cos( ang ) * dis ;
+		dy = sin( ang ) * dis ;
+		if(dx!=0 || dy!=0)
+			break;
+	}
+	x1 = (x+ dx + DimX) % DimX;
+	y1 = (y+ dy + DimY) % DimY;
+}
 
 
 
