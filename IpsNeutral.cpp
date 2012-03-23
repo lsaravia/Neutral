@@ -16,16 +16,6 @@
 
 using namespace std;
 
-double IPSNeutral::Rand() { 
-	//return ranf();
-	return ran.doub(); 
-	};
-
-int IPSNeutral::Rand(int num) {
-		return (ran.int64() % (num+1)); // between 0 and num inclusive 
-//    	return ignuin(0,num);
-        };
-
 
 IPSNeutral::~IPSNeutral()
 	{
@@ -165,11 +155,13 @@ void IPSNeutral::EvalCellZero(int x,int y)
 		//
 		// Euclidean distance, Norm 2
 		//
-		#ifdef UNIFORM_DISP
-			EuclideanDispersal(x,y,x1,y1);
-		#elif defined POWER_DISP
+#ifdef EXP_DISP
+			ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
 			PowerDispersal(x,y,x1,y1);
-		#endif
+#elif defined UNIFORM_DISP
+			EuclideanDispersal(x,y,x1,y1);
+#endif
 			int dSp= C(x1,y1).Specie;
 			if( dSp>0 )
 				C(x,y).Specie = dSp;
@@ -197,11 +189,13 @@ void IPSNeutral::EvalCellZero(int x,int y)
 			//
 			// Euclidean distance, Norm 2
 			//
-				#ifdef UNIFORM_DISP
-					EuclideanDispersal(x,y,x1,y1);
-				#elif defined POWER_DISP
+#ifdef EXP_DISP
+					ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
 					PowerDispersal(x,y,x1,y1);
-				#endif
+#elif defined UNIFORM_DISP
+					EuclideanDispersal(x,y,x1,y1);
+#endif
 				int dSp= C(x1,y1).Specie;
 				if( dSp>0 )
 					C(x,y).Specie = dSp;

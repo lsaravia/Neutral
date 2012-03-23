@@ -144,8 +144,9 @@ inline void IPSNeutral::PowerDispersal(const int &x,const int &y,int &x1,int &y1
 	double dd=Sp[0].DispersalDistance,dis;
 	while(true)
 	{
+		double ang;
 		dis= pow(Rand(), -1/(dd-1));
-		double ang = Rand() * Pi2;
+		ang = Rand() * Pi2;
 		dx = cos( ang ) * dis ;
 		dy = sin( ang ) * dis ;
 		if(dx!=0 || dy!=0)
@@ -153,19 +154,25 @@ inline void IPSNeutral::PowerDispersal(const int &x,const int &y,int &x1,int &y1
 	}
 	x1 = (x+ dx + DimX) % DimX;
 	y1 = (y+ dy + DimY) % DimY;
+	if( x1<0 || y1<0 )
+	{
+		x1= (x1+DimX)% DimX;
+		y1= (y1+DimY)% DimY;
+	}
 }
 
 //   Generate an exponential dispersal function with parameter beta = DispersalDistance
 //   
 inline void IPSNeutral::ExpDispersal(const int &x,const int &y,int &x1,int &y1)
 {
-	int dx,dy,dd,dis;	
-	dd=Sp[0].DispersalDistance;
+	int dx,dy;	
+	double dd=Sp[0].DispersalDistance,dis;
 	while(true)
 	{
 		double ang;
-		do ang=Rand(); while(ang==0.0); 
-		dis= -log(ang)/dd;
+		//do ang=Rand(); while(ang==0.0); 
+		// Le sumo 1 para que sea equivalente a Power que comienza desde 1
+		dis= 1.0-log(Rand())/dd;
 		ang = Rand() * Pi2;
 		dx = cos( ang ) * dis ;
 		dy = sin( ang ) * dis ;
@@ -175,6 +182,18 @@ inline void IPSNeutral::ExpDispersal(const int &x,const int &y,int &x1,int &y1)
 	x1 = (x+ dx + DimX) % DimX;
 	y1 = (y+ dy + DimY) % DimY;
 }
+
+
+inline double IPSNeutral::Rand() { 
+	//return ranf();
+	return ran.doub(); 
+	};
+
+inline int IPSNeutral::Rand(int num) {
+		return (ran.int64() % (num+1)); // between 0 and num inclusive 
+		//return ignuin(0,num);
+        };
+
 
 
 bool isEqual(double x, double y);
