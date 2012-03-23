@@ -1,9 +1,11 @@
 #ifndef __Neutral_H
 #define __Neutral_H
-#include "fortify.h"
+//#include "fortify.h"
 #include "cabase.hpp"
 #include "smattpl.hpp"
 #include <cmath>  /* for std::abs(double) */
+#include "ran.h"
+
 
 // Multiespecific Contact process
 //
@@ -36,7 +38,7 @@ class SpecieNeutral
 	double ColonizationRate;
 	double MortalityRate;
 	double ReplacementRate;
-	unsigned DispersalDistance;
+	double DispersalDistance;
 
 	SpecieNeutral() { Init(); };
 	virtual void Init(){
@@ -62,6 +64,7 @@ class IPSNeutral : public CABase
         double GlobalRate;
         int NumEvaluations;
         bool PrimeraEval; 			// primera evaluacion de una corrida
+        Ranfib ran;
 	public:
 
 	IPSNeutral( unsigned numSp, int dimX, int dimY, int rr=0 ) : CABase(numSp,dimX,dimY,rr) {Init(numSp,dimX,dimY,rr);};
@@ -74,6 +77,8 @@ class IPSNeutral : public CABase
 
 	void ReadSetSeed( char * fname);
 	void RandomSetSeed(int sp,unsigned age, int no, int minX);
+	int Rand(int num);
+	double Rand();
 
 	void Evaluate(int modType);
 	void EvalCell(int x,int y);
@@ -84,6 +89,8 @@ class IPSNeutral : public CABase
 	void ReRun();
 	void InitParms(const bool pomac);
 	void EuclideanDispersal(const int &x,const int &y,int &x1,int &y1);
+	void PowerDispersal(const int &x,const int &y,int &x1,int &y1);
+	void ExpDispersal(const int &x,const int &y,int &x1,int &y1);
 
 	void PrintGraph();
    	void InitGraph(char * idrPal);
@@ -133,12 +140,12 @@ inline void IPSNeutral::EuclideanDispersal(const int &x,const int &y,int &x1,int
 //   
 inline void IPSNeutral::PowerDispersal(const int &x,const int &y,int &x1,int &y1)
 {
-	int dx,dy,dd,dis;	
-	dd=Sp[0].DispersalDistance;
+	int dx,dy;	
+	double dd=Sp[0].DispersalDistance,dis;
 	while(true)
 	{
 		dis= pow(Rand(), -1/(dd-1));
-		double ang = Rand() * pi2;
+		double ang = Rand() * Pi2;
 		dx = cos( ang ) * dis ;
 		dy = sin( ang ) * dis ;
 		if(dx!=0 || dy!=0)
@@ -148,6 +155,26 @@ inline void IPSNeutral::PowerDispersal(const int &x,const int &y,int &x1,int &y1
 	y1 = (y+ dy + DimY) % DimY;
 }
 
+//   Generate an exponential dispersal function with parameter beta = DispersalDistance
+//   
+inline void IPSNeutral::ExpDispersal(const int &x,const int &y,int &x1,int &y1)
+{
+	int dx,dy,dd,dis;	
+	dd=Sp[0].DispersalDistance;
+	while(true)
+	{
+		double ang;
+		do ang=Rand(); while(ang==0.0); 
+		dis= -log(ang)/dd;
+		ang = Rand() * Pi2;
+		dx = cos( ang ) * dis ;
+		dy = sin( ang ) * dis ;
+		if(dx!=0 || dy!=0)
+			break;
+	}
+	x1 = (x+ dx + DimX) % DimX;
+	y1 = (y+ dy + DimY) % DimY;
+}
 
 
 bool isEqual(double x, double y);

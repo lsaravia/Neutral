@@ -1,7 +1,7 @@
 //
 // CADis : CA Discreto con bordes continuos
 //
-
+#include <ctime>
 #include <ctype.h>
 #include <iomanip>
 #include <sstream>
@@ -85,9 +85,10 @@ int main(int argc, char * argv[])
         else
 			cerr << "Run " << r << endl;
 
-
-		int i;
-        for(i=0; i<p.nEvals; i++)
+		timespec t0,t1;
+		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t0);
+        
+		for(int i=0; i<p.nEvals; i++)
 		{
             if( i == 0 )
 			{
@@ -164,7 +165,9 @@ int main(int argc, char * argv[])
 
 			}
 		}
-		
+		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t1);
+		cout << "ran     : " << (t1.tv_sec * 1000 + t1.tv_nsec/1000.0) - (t0.tv_sec * 1000 + t0.tv_nsec/1000.0) << endl;
+
 		r++;
 		if( r>p.nRuns && !p.pomac )
 			break;
