@@ -120,10 +120,17 @@ void IPSNeutral::EvalCell(int x,int y)
 		else 
         {
         //
-        // Dispersal using Euclidean distance, Norm 2
+        // Dispersal 
         //
-        EuclideanDispersal(x,y,x1,y1);
-        	
+#ifdef EXP_DISP
+		ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+		PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
+		EuclideanDispersal(x,y,x1,y1);
+#endif
+		// If the actual species don't die sends a propagule
+		//
 		if( C(x1,y1).Specie == 0 )
 			C(x1,y1).Specie = actSp;
 		}
@@ -252,14 +259,22 @@ void IPSNeutral::EvalCellHierarchy(int x,int y)
 				// Dispersal using Euclidean distance, Norm 2
 				//
 				//EuclideanDispersal(x,y,x1,y1);
-				//int dSp= C(x1,y1).Specie;
-				//if( dSp>0 && dSp < actSp)
-				//	C(x,y).Specie = dSp;
 
+#ifdef EXP_DISP
+				ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+				PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
 				EuclideanDispersal(x,y,x1,y1);
+#endif
+				// The actual species send a propagule to the neigborhood 
+				//
 				int & dSp= C(x1,y1).Specie;
 				if( dSp > actSp  || (dSp==0) ) 
 					dSp = actSp;
+				//int dSp= C(x1,y1).Specie;
+				//if( dSp>0 && dSp < actSp)
+				//	C(x,y).Specie = dSp;
 			}
         }
 	}
@@ -288,8 +303,10 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 					break;
 				}
         }
+        // Si no coloniza desde el exterior puede colonizar desde las especies del entorno
+
 /*        else
-        {
+           {
         //
         // Euclidean distance, Norm 2
         //
@@ -321,7 +338,13 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 			//
 			// Euclidean distance, Norm 2
 			//
+#ifdef EXP_DISP
+				ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+				PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
 				EuclideanDispersal(x,y,x1,y1);
+#endif
 				int dSp = C(x1,y1).Specie;
 				if( dSp>0 )
 					C(x,y).Specie = dSp;
@@ -347,7 +370,13 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 				//
 				// Dispersal using Euclidean distance, Norm 2
 				//
+#ifdef EXP_DISP
+				ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+				PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
 				EuclideanDispersal(x,y,x1,y1);
+#endif
 				int & dSp= C(x1,y1).Specie;
 				if( dSp > actSp  || (dSp==0) ) 
 					dSp = actSp;

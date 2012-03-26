@@ -1,10 +1,10 @@
-gr N
+gr S
 nRuns 1
-nEvals 1000
+nEvals 100
 rndSeed 0
-inter 10
+inter 1
 init  1
-modType 2
+modType 1
 de S
 sa N
 idrPal idrs256.smp
