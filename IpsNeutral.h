@@ -64,7 +64,8 @@ class IPSNeutral : public CABase
         double GlobalRate;
         int NumEvaluations;
         bool PrimeraEval; 			// primera evaluacion de una corrida
-        Ranfib ran;
+//        Ranfib ran;
+        Ranf1 ran;
 	public:
 
 	IPSNeutral( unsigned numSp, int dimX, int dimY, int rr=0 ) : CABase(numSp,dimX,dimY,rr) {Init(numSp,dimX,dimY,rr);};
@@ -159,6 +160,7 @@ inline void IPSNeutral::PowerDispersal(const int &x,const int &y,int &x1,int &y1
 		x1= (x1+DimX)% DimX;
 		y1= (y1+DimY)% DimY;
 	}
+	//cout << dx <<"\t" << dy << endl;
 }
 
 //   Generate an exponential dispersal function with parameter beta = DispersalDistance
@@ -171,8 +173,7 @@ inline void IPSNeutral::ExpDispersal(const int &x,const int &y,int &x1,int &y1)
 	{
 		double ang;
 		//do ang=Rand(); while(ang==0.0); 
-		// Le sumo 1 para que sea equivalente a Power que comienza desde 1
-		dis= 1.0-log(Rand())/dd;
+		dis= -log(Rand())/dd;
 		ang = Rand() * Pi2;
 		dx = cos( ang ) * dis ;
 		dy = sin( ang ) * dis ;
@@ -181,6 +182,11 @@ inline void IPSNeutral::ExpDispersal(const int &x,const int &y,int &x1,int &y1)
 	}
 	x1 = (x+ dx + DimX) % DimX;
 	y1 = (y+ dy + DimY) % DimY;
+	if( x1<0 || y1<0 )
+	{
+		x1= (x1+DimX)% DimX;
+		y1= (y1+DimY)% DimY;
+	}
 }
 
 

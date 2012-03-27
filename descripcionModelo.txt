@@ -93,3 +93,12 @@ La estructura de las líneas MetacommunityFrequency:
 	en la metacomunidad.
 
 	
+Dispersal functions
+-------------------
+A power dispersal with DispersalDistance=2.11 have a theoretical mean of 10 but the average from data
+is about 5.
+A exponential dispersal with DispersalDistance=.2 have a theoretical mean of 5 and the average is its MLE 
+so it's correct.
+A uniform distribution with DispersalDistance=10 have a mean of 5 but to be more similar to the power 
+dispersal the DispersalDistance=5 it's better
+Thus the mean is not a good measure to see the size of the clusters that form in the model.

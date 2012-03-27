@@ -12,7 +12,7 @@
 #include <iomanip>
 #include <stdio.h>
 #include <string>
-#include <time.h>
+
 
 using namespace std;
 
@@ -112,6 +112,23 @@ void IPSNeutral::EvalCell(int x,int y)
 					break;
 				}
         }
+/*        else
+		{
+        // Dispersion pensando en que cada sitio puede recibir
+		// un propagulo desde el entorno
+		//
+		
+#ifdef EXP_DISP
+			ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+			PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
+			EuclideanDispersal(x,y,x1,y1);
+#endif
+			int dSp= C(x1,y1).Specie;
+			if( dSp>0 )
+				C(x,y).Specie = dSp;
+		}*/
 	}
 	else
 	{
@@ -160,7 +177,7 @@ void IPSNeutral::EvalCellZero(int x,int y)
 		else
 		{
 		//
-		// Euclidean distance, Norm 2
+		// Dispersal
 		//
 #ifdef EXP_DISP
 			ExpDispersal(x,y,x1,y1);

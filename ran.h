@@ -7,6 +7,7 @@ struct Ranf1 {
 	// Fast randon generator based on numerical recipes, the period is 1.8 10^19 .
 	Ullint v;
 	Ranf1(Ullint j=0) : v(4101842887655102017LL) {
+		if( j==0 ) j=time(NULL);
 		v ^= j;
 		v = int64();
 	}

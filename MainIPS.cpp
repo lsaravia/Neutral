@@ -38,6 +38,7 @@ struct IPSParms
 };
 
 int ReadParms(char * pFile, IPSParms &p);
+timespec diff(timespec start, timespec end);
 
 int main(int argc, char * argv[])
 {
@@ -166,7 +167,8 @@ int main(int argc, char * argv[])
 			}
 		}
 		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t1);
-		cout << "ran     : " << (t1.tv_sec * 1000 + t1.tv_nsec/1000.0) - (t0.tv_sec * 1000 + t0.tv_nsec/1000.0) << endl;
+		cout << "Run " << r << "     : " << diff(t0,t1).tv_sec*1000+diff(t0,t1).tv_nsec/1000000<< endl;
+		// (t1.tv_sec * 1000 + t1.tv_nsec/1000.0) - (t0.tv_sec * 1000 + t0.tv_nsec/1000.0) << endl;
 
 		r++;
 		if( r>p.nRuns && !p.pomac )
@@ -297,4 +299,17 @@ int ReadParms(char * pFile, IPSParms &p)
 		parms >> buff;
     }
     return 1;
+}
+
+timespec diff(timespec start, timespec end)
+{
+	timespec temp;
+	if ((end.tv_nsec-start.tv_nsec)<0) {
+		temp.tv_sec = end.tv_sec-start.tv_sec-1;
+		temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
+	} else {
+		temp.tv_sec = end.tv_sec-start.tv_sec;
+		temp.tv_nsec = end.tv_nsec-start.tv_nsec;
+	}
+	return temp;
 }
