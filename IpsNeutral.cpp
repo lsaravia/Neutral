@@ -112,10 +112,10 @@ void IPSNeutral::EvalCell(int x,int y)
 					break;
 				}
         }
-/*        else
+        else
 		{
-        // Dispersion pensando en que cada sitio puede recibir
-		// un propagulo desde el entorno
+        // Dispersal: each site can receive a propagule from 
+		// the environment 
 		//
 		
 #ifdef EXP_DISP
@@ -128,13 +128,13 @@ void IPSNeutral::EvalCell(int x,int y)
 			int dSp= C(x1,y1).Specie;
 			if( dSp>0 )
 				C(x,y).Specie = dSp;
-		}*/
+		}
 	}
 	else
 	{
         if(rnd<Sp[0].MortalityRate)
             C(x,y).Specie=0;
-		else 
+/*		else 
         {
         //
         // Dispersal 
@@ -150,7 +150,7 @@ void IPSNeutral::EvalCell(int x,int y)
 		//
 		if( C(x1,y1).Specie == 0 )
 			C(x1,y1).Specie = actSp;
-		}
+		}*/
 	}
 }
 
@@ -211,7 +211,7 @@ void IPSNeutral::EvalCellZero(int x,int y)
 			else
 			{
 			//
-			// Euclidean distance, Norm 2
+			// Dispersal
 			//
 #ifdef EXP_DISP
 					ExpDispersal(x,y,x1,y1);
@@ -251,6 +251,24 @@ void IPSNeutral::EvalCellHierarchy(int x,int y)
 					break;
 				}
         }
+        else
+		{
+        // Dispersal: each site can receive a propagule from 
+		// the environment 
+		//
+		
+#ifdef EXP_DISP
+			ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+			PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
+			EuclideanDispersal(x,y,x1,y1);
+#endif
+			int dSp= C(x1,y1).Specie;
+			if( dSp>0 )
+				C(x,y).Specie = dSp;
+		}
+
 	}
 	else
 	{
@@ -273,10 +291,8 @@ void IPSNeutral::EvalCellHierarchy(int x,int y)
 			else
 			{
 				//
-				// Dispersal using Euclidean distance, Norm 2
+				// Dispersal 
 				//
-				//EuclideanDispersal(x,y,x1,y1);
-
 #ifdef EXP_DISP
 				ExpDispersal(x,y,x1,y1);
 #elif defined POWER_DISP
@@ -286,12 +302,12 @@ void IPSNeutral::EvalCellHierarchy(int x,int y)
 #endif
 				// The actual species send a propagule to the neigborhood 
 				//
-				int & dSp= C(x1,y1).Specie;
-				if( dSp > actSp  || (dSp==0) ) 
-					dSp = actSp;
-				//int dSp= C(x1,y1).Specie;
-				//if( dSp>0 && dSp < actSp)
-				//	C(x,y).Specie = dSp;
+				//int & dSp= C(x1,y1).Specie;
+				//if( dSp > actSp  || (dSp==0) ) 
+				//	dSp = actSp;
+				int dSp= C(x1,y1).Specie;
+				if( dSp>0 && dSp < actSp)
+					C(x,y).Specie = dSp;
 			}
         }
 	}
@@ -320,18 +336,23 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 					break;
 				}
         }
-        // Si no coloniza desde el exterior puede colonizar desde las especies del entorno
-
-/*        else
-           {
-        //
-        // Euclidean distance, Norm 2
-        //
-        	EuclideanDispersal(x,y,x1,y1);
+        else
+		{
+        // Dispersal: each site can receive a propagule from 
+		// the environment 
+		//
+		
+#ifdef EXP_DISP
+			ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+			PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
+			EuclideanDispersal(x,y,x1,y1);
+#endif
 			int dSp= C(x1,y1).Specie;
 			if( dSp>0 )
 				C(x,y).Specie = dSp;
-        } */
+		}
 	}
 	else
 	{
@@ -369,7 +390,6 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 		}
 		else
 		{
-			
 			rnd = Rand();
 			if(rnd<Sp[0].ColonizationRate)
 			{
@@ -385,7 +405,7 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 			else
 			{
 				//
-				// Dispersal using Euclidean distance, Norm 2
+				// Dispersal 
 				//
 #ifdef EXP_DISP
 				ExpDispersal(x,y,x1,y1);
@@ -394,9 +414,9 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 #elif defined UNIFORM_DISP
 				EuclideanDispersal(x,y,x1,y1);
 #endif
-				int & dSp= C(x1,y1).Specie;
-				if( dSp > actSp  || (dSp==0) ) 
-					dSp = actSp;
+				int dSp= C(x1,y1).Specie;
+				if( dSp>0 && dSp < actSp)
+					C(x,y).Specie = dSp;
 			}		
 		}
 	}
@@ -436,7 +456,8 @@ void IPSNeutral::InitParms(const bool pomac)
 
 	// Only two event birth or death make the total rate of change for each site
 	// GlobalRate = Sp[0].BirthRate > Sp[0].MortalityRate ? Sp[0].BirthRate : Sp[0].MortalityRate;
-	GlobalRate = Sp[0].BirthRate + Sp[0].MortalityRate;
+	// GlobalRate = Sp[0].BirthRate + Sp[0].MortalityRate;
+	GlobalRate = Sp[0].BirthRate;
 
 	Sp[0].BirthRate/=GlobalRate;
 	Sp[0].MortalityRate/=GlobalRate;
