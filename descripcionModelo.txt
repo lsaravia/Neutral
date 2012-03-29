@@ -39,7 +39,9 @@ idrPal		: Paleta de colores idrisi utilizada en salida grafica (NO IMPLEMENTADO)
 
 patchStat: Calculo de estadisticas de parche (NO IMPLEMENTADO)
 
-mfDim: Calculo de espectro multifractal por box-counting
+mfDim: Calculo de espectro multifractal Dq por box-counting toma un 
+		archivo q.sed para los q del espectro completo.
+		
 minBox:  tamaño de box minimo
 maxBox:  tamaño de box máximo, este valor se modifica para que no sea mayor
 		que la mitad del tamaño de la grilla DimX
@@ -95,10 +97,14 @@ La estructura de las líneas MetacommunityFrequency:
 	
 Dispersal functions
 -------------------
-A power dispersal with DispersalDistance=2.11 have a theoretical mean of 10 but the average from data
-is about 5.
-A exponential dispersal with DispersalDistance=.2 have a theoretical mean of 5 and the average is its MLE 
-so it's correct.
-A uniform distribution with DispersalDistance=10 have a mean of 5 but to be more similar to the power 
-dispersal the DispersalDistance=5 it's better
-Thus the mean is not a good measure to see the size of the clusters that form in the model.
+There are 3 diferent kinds of dispersal functions set at compile time using a macro definition in the
+makefile
+EXP_DISP defines an exponential distribution f(x) = dd*exp(-dd*x) with DispersalDistance=dd 
+mean = 1/dd
+
+UNIFORM_DISP defines a uniform distribution between 0 and DispersalDistance=dd with mean =dd/2
+
+POWER_DISP defines an inver power distribution f(x) = (dd-1)*pow(x,-dd) with mean = dd-1/(dd-2)
+DispersalDistance=dd
+  
+The mean is not a good measure to the size of the clusters that form in the model.

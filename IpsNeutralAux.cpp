@@ -385,14 +385,27 @@ int  IPSNeutral::PrintDensity(const char *fname,const char *iname)
 		dout << "\t" << freq;
 		tot+= den[i];
 		totBio+= freq;
-		if(freq>0) 
+		if(freq>0.0) 
 		{
-			diversity += freq * log(freq);
+			diversity += freq * log10(freq);
 			richness++;
 		}
 		if( freq > 0.001 ) 				// Mark > 0.001 
 			calcDiv[i] = true;
 	}
+	// If not saturated correct Shannon Diversity
+	//
+	if( tot<totCells)
+	{
+		diversity=0.0;
+		for( i=0; i<NumSpecies; i++)
+		{
+			freq = den[i]/tot;
+			if(freq>0.0) 
+				diversity += freq * log10(freq);
+		}
+	}
+	
 	dout << "\t" << totBio <<  "\t" << tot << "\t" << richness << "\t" << -1*diversity;
 	
 	// Calculates H diversity and richness for species with proportion > 0.001
@@ -406,7 +419,7 @@ int  IPSNeutral::PrintDensity(const char *fname,const char *iname)
 		if( calcDiv[i] )
 		{
 			freq = den[i]/totCells;
-			diversity += freq * log(freq);
+			diversity += freq * log10(freq);
 			richness++;
 		}
 			
@@ -482,7 +495,7 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 		totBio+= freq;
 		if(freq>0) 
 		{
-			diversity += freq * log(freq);
+			diversity += freq * log10(freq);
 			richness++;
 			if( freq>maxf )
 			{
@@ -493,6 +506,19 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 		if( freq > 0.001 ) 				// Mark > 0.001 
 			calcDiv[i] = true;
 	}
+	// If not saturated correct Shannon Diversity
+	//
+	if( tot<totCells)
+	{
+		diversity=0.0;
+		for( i=0; i<NumSpecies; i++)
+		{
+			freq = den[i]/tot;
+			if(freq>0.0) 
+				diversity += freq * log10(freq);
+		}
+	}
+
 	dout << "\t" << totBio <<  "\t" << tot << "\t" << richness << "\t" << -1*diversity;
 	
 	// Calculates H diversity and richness for species with proportion > 0.001
@@ -506,7 +532,7 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 		if( calcDiv[i] )
 		{
 			freq = den[i]/totCells;
-			diversity += freq * log(freq);
+			diversity += freq * log10(freq);
 			richness++;
 		}
 			
@@ -543,7 +569,7 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 		AddConst(dat,1.0);
 		MFStats(dat,q,4,512,20,nam3.str().c_str(),nam2.str().c_str());
 	}
-
+	
 	delete []calcDiv;					
 	return tot;
 	};
