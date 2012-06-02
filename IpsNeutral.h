@@ -110,6 +110,7 @@ class IPSNeutral : public CABase
 	int Convert(simplmat <double> &data);                                      // Convierte a simplmat
 	int Convert(simplmat <double> &data, const int * species );
 	int Convert(simplmat <double> &data, const int specie );
+	int Reordering(simplmat <double> &newdata );
 	int AddConst(simplmat <double> &data, const double aa );
 	
 	int MFStats(simplmat <double> &data, simplmat <double> &q,

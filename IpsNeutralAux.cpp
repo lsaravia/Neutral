@@ -13,6 +13,7 @@
 #include "grxkeys.h"
 #include <time.h>
 #include "bgi.hpp"
+#include "RWFile.h"
 
 #define uchar unsigned char
 
@@ -402,7 +403,7 @@ int  IPSNeutral::PrintDensity(const char *fname,const char *iname)
 		{
 			freq = den[i]/tot;
 			if(freq>0.0) 
-				diversity += freq * log10(freq);
+				diversity += freq * log(freq);
 		}
 	}
 	
@@ -419,7 +420,7 @@ int  IPSNeutral::PrintDensity(const char *fname,const char *iname)
 		if( calcDiv[i] )
 		{
 			freq = den[i]/totCells;
-			diversity += freq * log10(freq);
+			diversity += freq * log(freq);
 			richness++;
 		}
 			
@@ -495,7 +496,7 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 		totBio+= freq;
 		if(freq>0) 
 		{
-			diversity += freq * log10(freq);
+			diversity += freq * log(freq);
 			richness++;
 			if( freq>maxf )
 			{
@@ -515,7 +516,7 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 		{
 			freq = den[i]/tot;
 			if(freq>0.0) 
-				diversity += freq * log10(freq);
+				diversity += freq * log(freq);
 		}
 	}
 
@@ -532,7 +533,7 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 		if( calcDiv[i] )
 		{
 			freq = den[i]/totCells;
-			diversity += freq * log10(freq);
+			diversity += freq * log(freq);
 			richness++;
 		}
 			
@@ -541,14 +542,19 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 	delete []den;
 	dout.close();
 	
-	// Calculates infoDim of the most abundant specie
+	// Calculates Dq with q.sed for the most abundant specie
+	//
 	nam1 << fname << "mfCon.txt" << ends;
 	nam2 << iname << "\t" << T << ends;
 					
 	simplmat <double> dat;
-	simplmat <double> q(1);
-	q(0) = 1;
+	simplmat <double> q;
+	RWFile file;
+	if(!file.ReadSeed("q.sed", q))
+		exit(1);
+
 	Convert(dat,maxi);
+
 	if( !MFStats(dat,q,4,512,20,nam1.str().c_str(),nam2.str().c_str()) )
 	{
 		Convert(dat,maxi);
@@ -556,6 +562,14 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 		MFStats(dat,q,4,512,20,nam1.str().c_str(),nam2.str().c_str());
 	}
 
+	nam3 << fname << "mfOrd.txt" << ends;
+	
+	// Calculates Dq reordering species from the most abundant with 1 
+	//
+	if(Reordering(dat))
+		MFStats(dat,q,4,512,20,nam3.str().c_str(),nam2.str().c_str());
+		
+/*
 	// Calculates infoDim of all species minus the most abundant
 	nam3 << fname << "mfSin.txt" << ends;
 	for(i=0; i<NumSpecies; i++)
@@ -569,7 +583,7 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 		AddConst(dat,1.0);
 		MFStats(dat,q,4,512,20,nam3.str().c_str(),nam2.str().c_str());
 	}
-	
+*/
 	delete []calcDiv;					
 	return tot;
 	};

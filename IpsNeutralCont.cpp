@@ -3,20 +3,19 @@
 //	Clase Asociada : Specie
 //
 //
-//#pragma implementation
 
 #include "IpsNeutral.h"
 #include "bgi.hpp"
-//#include "fortify.h"
 #include <sstream>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
 #include <stdio.h>
 #include <string>
-#include <time.h>
+
 
 using namespace std;
+
 
 IPSNeutral::~IPSNeutral()
 	{
@@ -113,21 +112,45 @@ void IPSNeutral::EvalCell(int x,int y)
 					break;
 				}
         }
+        else
+		{
+        // Dispersal: each site can receive a propagule from 
+		// the environment 
+		//
+		
+#ifdef EXP_DISP
+			ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+			PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
+			EuclideanDispersal(x,y,x1,y1);
+#endif
+			int dSp= C(x1,y1).Specie;
+			if( dSp>0 )
+				C(x,y).Specie = dSp;
+		}
 	}
 	else
 	{
         if(rnd<Sp[0].MortalityRate)
             C(x,y).Specie=0;
-		else 
+/*		else 
         {
         //
-        // Dispersal using Euclidean distance, Norm 2
+        // Dispersal 
         //
-        EuclideanDispersal(x,y,x1,y1);
-        	
+#ifdef EXP_DISP
+		ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+		PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
+		EuclideanDispersal(x,y,x1,y1);
+#endif
+		// If the actual species don't die sends a propagule
+		//
 		if( C(x1,y1).Specie == 0 )
 			C(x1,y1).Specie = actSp;
-		}
+		}*/
 	}
 }
 
@@ -150,17 +173,23 @@ void IPSNeutral::EvalCellZero(int x,int y)
 					C(x,y).Specie=i;
 					break;
 				}
-        }
-        else
-        {
-        //
-        // Euclidean distance, Norm 2
-        //
-        	EuclideanDispersal(x,y,x1,y1);
+		}
+		else
+		{
+		//
+		// Dispersal
+		//
+#ifdef EXP_DISP
+			ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+			PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
+			EuclideanDispersal(x,y,x1,y1);
+#endif
 			int dSp= C(x1,y1).Specie;
-        	if( dSp>0 )
+			if( dSp>0 )
 				C(x,y).Specie = dSp;
-        } 
+		}
 	}
 	else
 	{
@@ -182,9 +211,15 @@ void IPSNeutral::EvalCellZero(int x,int y)
 			else
 			{
 			//
-			// Euclidean distance, Norm 2
+			// Dispersal
 			//
-				EuclideanDispersal(x,y,x1,y1);
+#ifdef EXP_DISP
+					ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+					PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
+					EuclideanDispersal(x,y,x1,y1);
+#endif
 				int dSp= C(x1,y1).Specie;
 				if( dSp>0 )
 					C(x,y).Specie = dSp;
@@ -194,6 +229,7 @@ void IPSNeutral::EvalCellZero(int x,int y)
 }
 
 // Not saturated hierarchical competition model
+// With parameter ReplacementRate switching between neutral and hierarchical
 // 
 void IPSNeutral::EvalCellHierarchy(int x,int y)
 {
@@ -216,6 +252,24 @@ void IPSNeutral::EvalCellHierarchy(int x,int y)
 					break;
 				}
         }
+        else
+		{
+        // Dispersal: each site can receive a propagule from 
+		// the environment 
+		//
+		
+#ifdef EXP_DISP
+			ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+			PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
+			EuclideanDispersal(x,y,x1,y1);
+#endif
+			int dSp= C(x1,y1).Specie;
+			if( dSp>0 )
+				C(x,y).Specie = dSp;
+		}
+
 	}
 	else
 	{
@@ -229,26 +283,34 @@ void IPSNeutral::EvalCellHierarchy(int x,int y)
 				rnd = Rand();
 				for(i=1; i<=NumSpecies; i++)
 					if(rnd<Sp[i].ColonizationRate)
-					{							// La reemplaza si la especie invasora es menor
-						if( actSp>i) 			// Falta la probabilidad ro de reemplazo
-							C(x,y).Specie=i;
+					{	
+						// Modficar probabilidad  de reemplazo************						
+						// La reemplaza si la especie invasora es menor
+						if( actSp>i) 			
+							C(x,y).Specie=i;	
 						break;
 					}
 			}
 			else
 			{
 				//
-				// Dispersal using Euclidean distance, Norm 2
+				// Dispersal 
 				//
-				//EuclideanDispersal(x,y,x1,y1);
-				//int dSp= C(x1,y1).Specie;
-				//if( dSp>0 && dSp < actSp)
-				//	C(x,y).Specie = dSp;
-
+#ifdef EXP_DISP
+				ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+				PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
 				EuclideanDispersal(x,y,x1,y1);
-				int & dSp= C(x1,y1).Specie;
-				if( dSp > actSp  || (dSp==0) ) 
-					dSp = actSp;
+#endif
+				// The actual species send a propagule to the neigborhood 
+				//
+				//int & dSp= C(x1,y1).Specie;
+				//if( dSp > actSp  || (dSp==0) ) 
+				//	dSp = actSp;
+				int dSp= C(x1,y1).Specie;
+				if( dSp>0 && dSp < actSp)
+					C(x,y).Specie = dSp;
 			}
         }
 	}
@@ -277,16 +339,23 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 					break;
 				}
         }
-/*        else
-        {
-        //
-        // Euclidean distance, Norm 2
-        //
-        	EuclideanDispersal(x,y,x1,y1);
+        else
+		{
+        // Dispersal: each site can receive a propagule from 
+		// the environment 
+		//
+		
+#ifdef EXP_DISP
+			ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+			PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
+			EuclideanDispersal(x,y,x1,y1);
+#endif
 			int dSp= C(x1,y1).Specie;
 			if( dSp>0 )
 				C(x,y).Specie = dSp;
-        } */
+		}
 	}
 	else
 	{
@@ -310,7 +379,13 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 			//
 			// Euclidean distance, Norm 2
 			//
+#ifdef EXP_DISP
+				ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+				PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
 				EuclideanDispersal(x,y,x1,y1);
+#endif
 				int dSp = C(x1,y1).Specie;
 				if( dSp>0 )
 					C(x,y).Specie = dSp;
@@ -318,7 +393,6 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 		}
 		else
 		{
-			
 			rnd = Rand();
 			if(rnd<Sp[0].ColonizationRate)
 			{
@@ -326,87 +400,29 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 				for(i=1; i<=NumSpecies; i++)
 					if(rnd<Sp[i].ColonizationRate)
 					{							// La reemplaza si la especie invasora es menor
-						if( actSp>i) 			// Falta la probabilidad ro de reemplazo
-							C(x,y).Specie=i;
+						if( actSp>i) 			
+							C(x,y).Specie=i;	
 						break;
 					}
 			}
 			else
 			{
 				//
-				// Dispersal using Euclidean distance, Norm 2
+				// Dispersal 
 				//
+#ifdef EXP_DISP
+				ExpDispersal(x,y,x1,y1);
+#elif defined POWER_DISP
+				PowerDispersal(x,y,x1,y1);
+#elif defined UNIFORM_DISP
 				EuclideanDispersal(x,y,x1,y1);
-				int & dSp= C(x1,y1).Specie;
-				if( dSp > actSp  || (dSp==0) ) 
-					dSp = actSp;
+#endif
+				int dSp= C(x1,y1).Specie;
+				if( dSp>0 && dSp < actSp)
+					C(x,y).Specie = dSp;
 			}		
 		}
 	}
-}
-
-
-// Not saturated Density dependent neutral model 
-// 
-void IPSNeutral::EvalCellDensity(int x,int y)
-{
-    int actSp = C(x,y).Specie;
-	double rnd = Rand();
-    int x1,y1,i;
-
-
-	if(actSp==0)
-	{
-		if(rnd<Sp[0].ColonizationRate) // Colonize from metacommunity
-		{
-			rnd = Rand();
-			for(i=1; i<=NumSpecies; i++)
-				if(rnd<Sp[i].ColonizationRate)
-				{
-					C(x,y).Specie=i;
-					break;
-				}
-        }
-	}
-	else
-	{
-		double rho=ParetoNeighborhood(x, y);
-        if(rnd<Sp[0].MortalityRate)
-            C(x,y).Specie=0;
-		else 
-        {
-        //
-        // Dispersal using Euclidean distance, Norm 2
-        //
-        EuclideanDispersal(x,y,x1,y1);
-        	
-		if( C(x1,y1).Specie == 0 )
-			C(x1,y1).Specie = actSp;
-		}
-	}
-}
-
-double IPSNeutral::ParetoNeighborhood( int x, int y)
-{
-	int xf,yf,yi,dx,dy,dd;	
-	dd=Sp[0].DispersalDistance;
-	int k= Sp[0].ReplacementRate; // Es el parametro k de la funcion de Pareto 
-	double sumTot=0,sumSp=0,dis;
-	xf = x+dd;
-	yf = y+dd;
-	yi = y - dd;
-	for(dx=x-dd; dx<=xf; dx++)
-		for(dy=yi; dy<=yf; dy++)
-			{
-			x1 = (dx + DimX) % DimX;
-			y1 = (dy + DimY) % DimY;
-			dis = sqrt( static_cast<double>( (y-dy) * (y-dy) + (x-dx) * (x-dx) ));
-			par = pow(1/dis, k);
-			sumTot+= par;
-			if( C(x1,y1).Specie>0)
-				sumSp+=par;
-			}
-	return (sumSp/sumTot);
 }
 
 
@@ -443,7 +459,8 @@ void IPSNeutral::InitParms(const bool pomac)
 
 	// Only two event birth or death make the total rate of change for each site
 	// GlobalRate = Sp[0].BirthRate > Sp[0].MortalityRate ? Sp[0].BirthRate : Sp[0].MortalityRate;
-	GlobalRate = Sp[0].BirthRate + Sp[0].MortalityRate;
+	// GlobalRate = Sp[0].BirthRate + Sp[0].MortalityRate;
+	GlobalRate = Sp[0].BirthRate;
 
 	Sp[0].BirthRate/=GlobalRate;
 	Sp[0].MortalityRate/=GlobalRate;

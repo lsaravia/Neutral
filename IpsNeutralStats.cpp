@@ -19,6 +19,57 @@ int IPSNeutral::Convert(simplmat <double> &data)
 	return 1;
 }
 
+int IPSNeutral::Reordering(simplmat <double> &newdata )
+{
+	int i,a,maxi;
+	if( newdata.getRows()!=DimX || newdata.getCols()!=DimY)
+		newdata.resize(DimX,DimY,0.0);
+	else
+		newdata.fill(0.0);
+		
+	double maxDen;
+	
+	double * den = new double[NumSpecies];
+
+	for(i=0; i<NumSpecies; i++)
+		den[i]=0;
+	
+	for(i=0; i<DimY; i++)
+		for(int j=0;j<DimX;j++)
+			{
+			a = C(j,i).Specie;
+			if( a>0 )
+				den[ a-1 ]++;
+			}
+			
+	int newSpecie=0;
+	while(newSpecie<NumSpecies)
+	{
+		maxDen=maxi=0;
+		for( i=0; i<NumSpecies; i++)
+			if(den[i]>maxDen)
+				{
+					maxi=i+1;
+					maxDen=den[i];
+				}
+		if (maxDen==0) break;
+		
+		//cout << maxi << "-" << maxDen << "\t";
+		newSpecie++;
+		for(i=0; i<DimY; i++)
+			for(int j=0;j<DimX;j++)
+				{
+				a = C(j,i).Specie;
+				if( a==maxi )
+					newdata(j,i)=newSpecie;
+				}
+		den[maxi-1]=0;
+	}
+	return(1);
+}
+
+
+
 // Convierte la matriz de especies solo con las que estan en species
 // 
 int IPSNeutral::Convert(simplmat <double> &data, const int * species )
