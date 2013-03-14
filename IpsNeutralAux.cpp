@@ -8,7 +8,6 @@
 #include <iomanip>
 #include <sstream>
 #include "IpsNeutral.h"
-#include "fortify.h"
 #include <ctype.h>
 #include "grxkeys.h"
 #include <time.h>
@@ -388,7 +387,7 @@ int  IPSNeutral::PrintDensity(const char *fname,const char *iname)
 		totBio+= freq;
 		if(freq>0.0) 
 		{
-			diversity += freq * log10(freq);
+			diversity += freq * log(freq);
 			richness++;
 		}
 		if( freq > 0.001 ) 				// Mark > 0.001 
@@ -494,7 +493,7 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 		freq = den[i]/totCells;
 		tot+= den[i];
 		totBio+= freq;
-		if(freq>0) 
+		if(freq>0.0) 
 		{
 			diversity += freq * log(freq);
 			richness++;
@@ -524,7 +523,7 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 	
 	// Calculates H diversity and richness for species with proportion > 0.001
 	//
-	totCells = diversity = richness = 0;
+	totCells = diversity = richness = 0.0;
 	for( i=0; i<NumSpecies; i++)
 		if( calcDiv[i] )
 			totCells+=den[i];
@@ -728,8 +727,9 @@ int IPSNeutral::ReadLineParms( const char * file)
 	ins >> Sp[0].MortalityRate;
 	ins >> Sp[0].DispersalDistance;
 	ins >> Sp[0].ColonizationRate;
+	ins >> Sp[0].ReplacementRate;
 	
-	if(Sp[0].BirthRate<0 || Sp[0].DispersalDistance<0 || Sp[0].MortalityRate<0 || Sp[0].ColonizationRate<0 )
+	if(Sp[0].BirthRate<0 || Sp[0].DispersalDistance<0 || Sp[0].MortalityRate<0 || Sp[0].ColonizationRate<0 || Sp[0].ReplacementRate<0)
 	{
 		cerr << "Invalid parameter reading " << file << " file!!!!\b\b\b\b\b\b\b" << endl;
 		exit(1);
@@ -745,7 +745,8 @@ string IPSNeutral::PrintLineParms()
 	fb << Sp[0].BirthRate << "\t";
 	fb << Sp[0].MortalityRate << "\t";
 	fb << Sp[0].DispersalDistance << "\t";
-	fb << Sp[0].ColonizationRate;
+	fb << Sp[0].ColonizationRate << "\t";
+	fb << Sp[0].ReplacementRate;
 	
  	return fb.str();
 }

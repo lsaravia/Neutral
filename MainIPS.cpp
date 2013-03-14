@@ -147,7 +147,7 @@ int main(int argc, char * argv[])
 							RWFile file;
 
 							ostringstream name,nam1;
-							name << p.baseName << "mf.txt" << ends;
+							name << p.baseName << "mfOrd.txt" << ends;
 							nam1 << argv[2] << "-" << (i+1) << ends;
 							simplmat <double> dat;
 							simplmat <double> q;
@@ -158,7 +158,8 @@ int main(int argc, char * argv[])
 							//q(1) = 1;
 							//q(2) = 2;
 							ca.Convert(dat);
-							ca.MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,name.str().c_str(),nam1.str().c_str());
+							if(ca.Reordering(dat))
+								ca.MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,name.str().c_str(),nam1.str().c_str());
 							}
 					}
 				}
