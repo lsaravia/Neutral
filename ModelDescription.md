@@ -1,20 +1,21 @@
-PARAMETROS de Linea de Commandos
+# PARAMETROS de Linea de Commandos
 
 ipsNeutral file.par file.inp file.sed/file.set
 
-Todos los archivos son archivos de texto planos.
-Los dos primeros archivos .par y .inp son obligatorios 
-tienen los parametros de simulación y de las especies. Los archivos
-.sed y .inp son de condiciones iniciales, se puede utilizar uno u otro,
-no los dos al mismo tiempo.
+All files are plain text. The first two files are required.
 
-ARCHIVO par
------------
-Tiene los parametros de simulación y los de toma de datos
+**file.par** have the simulation's parameters
+**file.inp** have the species's parameters
 
-gr		: Graficos S/N
+The other files **sed** and **inp** are for set initial conditions, they can not be used  both at the same time.
 
-nRuns		: número de corridas con este set de parametros
+# file.par
+
+It has the simulation's parameters and kind of outputs the model will calculate.
+
+1. *gr*		: Graphic output S/N
+
+2. *nRuns*		: número de corridas con este set de parametros
 
 nEvals		: número de pasos de tiempo (tiempo maximo)
 
@@ -54,7 +55,8 @@ pomac: S/N Toma los parametros de un archivo llamado pomac.lin y hace una
 	salida especial resumida
 
 
-ARCHIVO sed
+# ARCHIVO sed
+
 sed: archivo de condiciones iniciales -> Posiciones espaciales, especie, edad, Habitat.
 
 DimX, DimY	: dimensiones del lattice
@@ -66,13 +68,16 @@ La estructura es la siguiente
 	Matriz de numeros de DIMX x DIMY con la posicion de las especies
 
 
-ARCHIVO set
+# ARCHIVO set
+
 archivo de condiciones iniciales -> siembra al azar individuos de cierta especie y edad
 esta compuesto de lineas con la siguiente estructura
+
 	especie edad cantidad [posicion x maxima] [habitat]
 	
 
-ARCHIVO inp
+# FILE **inp**
+
 Parametros del modelo y frecuencia de especies en la comunidad
 Con la siguiente estructura de lineas
 
@@ -81,24 +86,26 @@ Con la siguiente estructura de lineas
 	specieParameters
 	MetacommunityFrequency (numSpecies cantidad de lineas)
 	
-La estructura de la línea specieParameters:
+The structure of the line specieParameters is:
 
 	sp	BirthRate	MortalityRate	DispersalDistance	ColonizationProb	[ReplacementRate]
 	
-	sp representa el numero de especie en este caso es igual a cero y tiene 
-	los parametros del modelo
+	sp=0 represents the parameters of all species 
+	DispersalDistance is the parameter of the dispersal kernel, only with uniform distribution
+	represent the true maximal dispersal distance.
 
-La estructura de las líneas MetacommunityFrequency:
+The structure of the lines MetacommunityFrequency is:
+
 	sp	0	0	0	Freq
 	
 	sp representa el numero de especie desde 1 hasta numSpecies y Freq la frecuencia
 	en la metacomunidad.
 
 	
-Dispersal functions
--------------------
-There are 3 diferent kinds of dispersal functions set at compile time using a macro definition in the
-makefile
+# Dispersal functions
+
+There are 3 diferent kinds of dispersal functions set at compile time using a macro definition in the makefile
+
 EXP_DISP defines an exponential distribution f(x) = dd*exp(-dd*x) with DispersalDistance=dd 
 mean = 1/dd
 

@@ -1,12 +1,12 @@
 gr N
 nRuns 1
-nEvals 50
+nEvals 200
 rndSeed 0
 inter 7
 init  1
-modType 2
+modType 3
 de S
-sa S
+sa N
 idrPal idrs256.smp
 baseName test
 patchStat N
@@ -15,4 +15,4 @@ minBox 4
 maxBox 512
 deltaBox 20
 moranI N
-pomac 0
+pomac 1
