@@ -5,6 +5,7 @@ Multiespecific neutral/hierachical stochastic model
 This is C++ code for neutral/hierarchical competition models. In these all species have the same parameters except the probability of colonization from metacommunity. 
 
 There are actually 5 similar models built in
+
 1. Non-saturated neutral (Etienne 2007)
 2. Saturated Neutral 
 3. Non-saturated Hierarchical (Tilman 1994)
