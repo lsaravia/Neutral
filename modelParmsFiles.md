@@ -1,4 +1,4 @@
-PARAMETROS de Linea de Commandos
+## PARAMETROS de Linea de Commandos
 
 ipsNeutral file.par file.inp file.sed/file.set
 
@@ -8,8 +8,8 @@ tienen los parametros de simulación y de las especies. Los archivos
 .sed y .inp son de condiciones iniciales, se puede utilizar uno u otro,
 no los dos al mismo tiempo.
 
-ARCHIVO par
------------
+## ARCHIVO par
+
 Tiene los parametros de simulación y los de toma de datos
 
 gr		: Graficos S/N
@@ -54,7 +54,8 @@ pomac: S/N Toma los parametros de un archivo llamado pomac.lin y hace una
 	salida especial resumida
 
 
-ARCHIVO sed
+## ARCHIVO sed
+
 sed: archivo de condiciones iniciales -> Posiciones espaciales, especie, edad, Habitat.
 
 DimX, DimY	: dimensiones del lattice
@@ -66,45 +67,51 @@ La estructura es la siguiente
 	Matriz de numeros de DIMX x DIMY con la posicion de las especies
 
 
-ARCHIVO set
+## ARCHIVO set
+
 archivo de condiciones iniciales -> siembra al azar individuos de cierta especie y edad
 esta compuesto de lineas con la siguiente estructura
 	especie edad cantidad [posicion x maxima] [habitat]
 	
 
-ARCHIVO inp
+## ARCHIVO inp
+
 Parametros del modelo y frecuencia de especies en la comunidad
 Con la siguiente estructura de lineas
 
 	DimX	DimY
 	numSpecies
-	specieParameters
-	MetacommunityFrequency (numSpecies cantidad de lineas)
+	specieParameters (1 line)
+	MetacommunityFrequency (numSpecies # lines )
 	
-La estructura de la línea specieParameters:
+* specieParameters: Describe the general parameters of species
 
 	sp	BirthRate	MortalityRate	DispersalDistance	ColonizationProb	[ReplacementRate]
 	
-	sp representa el numero de especie en este caso es igual a cero y tiene 
-	los parametros del modelo
+	sp = 0 
 
-La estructura de las líneas MetacommunityFrequency:
+* La estructura de las líneas MetacommunityFrequency:
 	sp	0	0	0	Freq
 	
-	sp representa el numero de especie desde 1 hasta numSpecies y Freq la frecuencia
-	en la metacomunidad.
+	sp  = 1.. numSpecies 
+	Freq = Metacommunity Frequency 
 
+	SUM(Freq)=1 
+
+
+## File [pomac.lin]
 	
-Dispersal functions
--------------------
+## Dispersal functions
+
 There are 3 diferent kinds of dispersal functions set at compile time using a macro definition in the
-makefile
-EXP_DISP defines an exponential distribution f(x) = dd*exp(-dd*x) with DispersalDistance=dd 
+makefile, for the following formulas: dd = DispersalDistance
+
+EXP_DISP defines an exponential distribution f(x) = dd*exp(-dd*x) with 
 mean = 1/dd
 
-UNIFORM_DISP defines a uniform distribution between 0 and DispersalDistance=dd with mean =dd/2
+UNIFORM_DISP defines a uniform distribution between 0 and dd with mean =dd/2
 
-POWER_DISP defines an inver power distribution f(x) = (dd-1)*pow(x,-dd) with mean = dd-1/(dd-2)
-DispersalDistance=dd
+POWER_DISP defines an inverse power distribution f(x) = (dd-1)*pow(x,-dd) with mean = dd-1/(dd-2)
+
   
 The mean is not a good measure to the size of the clusters that form in the model.

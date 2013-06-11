@@ -20,6 +20,7 @@ Three kinds of dispersal
 
 
 
-Bibliography
+## Bibliography
+
 Tilman, D., 1994. Competition and biodiversity in spatially structured habitats. Ecology, 75(1), pp.2-16.
 Etienne, R.S., Alonso, D. & McKane, A.J., 2007. The zero-sum assumption in neutral biodiversity theory. Journal of Theoretical Biology, 248(3), pp.522-536.
