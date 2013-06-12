@@ -1,9 +1,4 @@
 *.[oa]
-*.zip
-*.gpr
-*.gdt
-*.exe
 *.ods
 *.xls
-*~
-ipsNeutral*
+.R*

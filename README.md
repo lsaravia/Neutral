@@ -1,26 +1,48 @@
 
-Multiespecific neutral/hierachical stochastic spatial model
-===========================================================
+Multiespecific neutral/hierachical stochastic model
+===================================================
 
-This a stochastic CA or also called interactive particle system for neutral/hierarchical models. 
-In the neutral models all species have the same parameters except the probability of colonization from metacommunity that is proportional to the frequency on the metacommunity. This probability can be made uniform and very low to simulate speciation.
+This is C++ code for neutral/hierarchical competition models. In these all species have the same parameters except the probability of colonization from metacommunity. 
 
-There are actually 4 models built in
+There are actually 5 similar models built in
 
 1. Non-saturated neutral (Etienne 2007)
 2. Saturated Neutral 
 3. Non-saturated Hierarchical (Tilman 1994)
 4. Saturated Hierarchical 
+5. Continuum model between 2 and 4 (or 1 and 3) (compiled with makefileCont.mak)
 
-Three kinds of dispersal
+And three dispersal kernels
 
 1. Uniform
 2. Exponential
-3. Inverse power
+3. Inverse power 
 
+I am using GCC to compile it. For a crude and slow graphical output you will need the X11 SDL development libraries and the GRX graphics library http://grx.gnu.de/grx246um.htm
 
+You also need the code from https://github.com/lsaravia/mfsba if you want the multifractal spectra output otherwise you have to comment those lines.
 
-## Bibliography
+Bibliography
 
 Tilman, D., 1994. Competition and biodiversity in spatially structured habitats. Ecology, 75(1), pp.2-16.
+
 Etienne, R.S., Alonso, D. & McKane, A.J., 2007. The zero-sum assumption in neutral biodiversity theory. Journal of Theoretical Biology, 248(3), pp.522-536.
+
+License
+=======
+
+	Copyright 2011 Leonardo A. Saravia
+ 
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
