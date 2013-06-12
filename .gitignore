@@ -2,3 +2,5 @@
 *.ods
 *.xls
 .R*
+*~
+ipsNeutral*

@@ -17,41 +17,41 @@ It has the simulation's parameters and kind of outputs the model will calculate.
 
 2. *nRuns*		: número de corridas con este set de parametros
 
-nEvals		: número de pasos de tiempo (tiempo maximo)
+3. *nEvals*		: número de pasos de tiempo (tiempo maximo)
 
-rndSeed		: semilla para el generador de nros al azar, si es 0 toma el time
+4. *rndSeed*		: semilla para el generador de nros al azar, si es 0 toma el time
 
-inter		: intervalo en pasos para mostrar grafico y/o 
+5. *inter*		: intervalo en pasos para mostrar grafico y/o 
 		  hacer salidad de datos y/o tomar informacion para promedios
 
-init		: numero de pasos a partir del cual inicia la toma de datos o muestra en pantalla
+6. *init*		: numero de pasos a partir del cual inicia la toma de datos o muestra en pantalla
 
-modType: 1=Modelo neutral no saturado, 2=Modelo neutral saturado, 
-		 3=Modelo jerarquico no saturado, 4=Modelo jerarquico saturado.
+7. *modType*	: 1=Modelo neutral no saturado, 2=Modelo neutral saturado, 
+		 	3=Modelo jerarquico no saturado, 4=Modelo jerarquico saturado.
 
-de		: imprime densidad de especies, Riqueza y diversidad de Shanonn. 
+8	*de*		: imprime densidad de especies, Riqueza y diversidad de Shanonn. 
 
-sa		: Guarda el estado del modelo en formato sed a partir de [inicio] 
-			y con la periodicidad especificada en [inter]
+9.	*sa*		: Guarda el estado del modelo en formato sed a partir de [inicio] 
+				y con la periodicidad especificada en [inter]
 
-baseName	: Nombre de Archivo para salvar archivos sed y demas salidas.
+10.	*baseName*	: Nombre de Archivo para salvar archivos sed y demas salidas.
 
-idrPal		: Paleta de colores idrisi utilizada en salida grafica (NO IMPLEMENTADO)
+11. *idrPal*	: Paleta de colores idrisi utilizada en salida grafica (NO IMPLEMENTADO)
 
-patchStat: Calculo de estadisticas de parche (NO IMPLEMENTADO)
+12.	*patchStat*	: Calculo de estadisticas de parche (NO IMPLEMENTADO)
 
-mfDim: Calculo de espectro multifractal Dq por box-counting toma un 
+13.	*mfDim* 	: Calculo de espectro multifractal Dq por box-counting toma un 
 		archivo q.sed para los q del espectro completo.
 		
-minBox:  tamaño de box minimo
-maxBox:  tamaño de box máximo, este valor se modifica para que no sea mayor
+14: *minBox* 	:  tamaño de box minimo
+15: *maxBox*	:  tamaño de box máximo, este valor se modifica para que no sea mayor
 		que la mitad del tamaño de la grilla DimX
-deltaBox: cantidad de intervalos, tambien se modifica para que sean potencias
+16.	*deltaBox*	: cantidad de intervalos, tambien se modifica para que sean potencias
 		de 2
 		
-moranI: Calculo de indice de correlacion I de Moran (No Implementado)
+17. *moranI*	: Calculo de indice de correlacion I de Moran (No Implementado)
 
-pomac: S/N Toma los parametros de un archivo llamado pomac.lin y hace una 
+18.	*pomac*		: S/N Toma los parametros de un archivo llamado pomac.lin y hace una 
 	salida especial resumida
 
 
@@ -84,7 +84,7 @@ Con la siguiente estructura de lineas
 	DimX	DimY
 	numSpecies
 	specieParameters
-	MetacommunityFrequency (numSpecies cantidad de lineas)
+	MetacommunityFrequency (numSpecies lines)
 	
 The structure of the line specieParameters is:
 
@@ -98,20 +98,19 @@ The structure of the lines MetacommunityFrequency is:
 
 	sp	0	0	0	Freq
 	
-	sp representa el numero de especie desde 1 hasta numSpecies y Freq la frecuencia
-	en la metacomunidad.
+	sp  = 1.. numSpecies 
+	Freq = Metacommunity Frequency 
+
 
 	
 # Dispersal functions
 
-There are 3 diferent kinds of dispersal functions set at compile time using a macro definition in the makefile
+There are 3 diferent kinds of dispersal functions set at compile time using a macro definition in the makefile, for the following formulas: dd = DispersalDistance
 
-EXP_DISP defines an exponential distribution f(x) = dd*exp(-dd*x) with DispersalDistance=dd 
-mean = 1/dd
+EXP_DISP defines an exponential distribution f(x) = dd*exp(-dd*x) with mean = 1/dd
 
-UNIFORM_DISP defines a uniform distribution between 0 and DispersalDistance=dd with mean =dd/2
+UNIFORM_DISP defines a uniform distribution between 0 and dd with mean =dd/2
 
-POWER_DISP defines an inver power distribution f(x) = (dd-1)*pow(x,-dd) with mean = dd-1/(dd-2)
-DispersalDistance=dd
+POWER_DISP defines an inverse power distribution f(x) = (dd-1)*pow(x,-dd) with mean = dd-1/(dd-2)
   
 The mean is not a good measure to the size of the clusters that form in the model.

@@ -22,7 +22,7 @@ I am using GCC to compile it. For a crude and slow graphical output you will nee
 
 You also need the code from https://github.com/lsaravia/mfsba if you want the multifractal spectra output otherwise you have to comment those lines.
 
-Bibliography
+## Bibliography
 
 Tilman, D., 1994. Competition and biodiversity in spatially structured habitats. Ecology, 75(1), pp.2-16.
 
