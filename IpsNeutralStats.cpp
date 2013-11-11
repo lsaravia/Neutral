@@ -19,6 +19,43 @@ int IPSNeutral::Convert(simplmat <double> &data)
 	return 1;
 }
 
+// Converting to Biomass with M=aN^(-4/3) min=.2 max=200
+// 
+int IPSNeutral::ConvertToBio(simplmat <double> &data, double * den)
+{
+	double dar=-4/3 // 1/(Damuth power)
+	double a=0,spc=0;
+	// set minimun value to 0.2 
+	double minB = DimX*DimY*0.1;
+	a = minB/(pow(0.2,(1/dar)));
+
+	int dx,dy;
+	dx = data.getRows();
+	dy = data.getCols();
+
+	if( dx!=DimX || dy!=DimY )
+		data.resize(DimX, DimY, 0.0);
+		
+	for(dy=0;dy<DimY; dy++)
+		for(dx=0;dx<DimX; dx++)
+		{
+
+			spc = C(j,i).Specie;
+			if( spc>0 )
+			{
+				if( den[spc-1]<minB )
+					data(dx,dy) = 0.2;
+				else 
+				{
+				    double bio  = pow(den[spc-1]/a,dar);
+				    if(bio>200) bio=200;
+				    data(dx,dy) = bio;
+				}
+			}
+		}
+	return 1;
+}
+
 int IPSNeutral::Reordering(simplmat <double> &newdata )
 {
 	int i,a,maxi;

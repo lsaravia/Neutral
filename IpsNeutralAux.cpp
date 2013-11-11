@@ -538,19 +538,33 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 			
 	dout << "\t" << richness << "\t" << -1*diversity << endl;
 
-	delete []den;
 	dout.close();
 	
-	// Calculates Dq with q.sed for the most abundant specie
-	//
-	nam1 << fname << "mfCon.txt" << ends;
 	nam2 << iname << "\t" << T << ends;
-					
+
 	simplmat <double> dat;
 	simplmat <double> q;
 	RWFile file;
 	if(!file.ReadSeed("q.sed", q))
 		exit(1);
+
+	
+	// Calculates Dq reordering species from the most abundant with 1 
+	//
+	nam3 << fname << "mfOrd.txt" << ends;
+
+	if(Reordering(dat))
+		MFStats(dat,q,4,512,20,nam3.str().c_str(),nam2.str().c_str());
+	
+	// Calculates Dq converting to bioVolume =aN^(-4/3) 
+	//
+	nam3 << fname << "mfBio.txt" << ends;
+
+
+/*
+	// Calculates Dq with q.sed for the most abundant specie
+	//
+	nam1 << fname << "mfCon.txt" << ends;
 
 	Convert(dat,maxi);
 
@@ -561,15 +575,8 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 		MFStats(dat,q,4,512,20,nam1.str().c_str(),nam2.str().c_str());
 	}
 
-	nam3 << fname << "mfOrd.txt" << ends;
-	
-	// Calculates Dq reordering species from the most abundant with 1 
-	//
-	if(Reordering(dat))
-		MFStats(dat,q,4,512,20,nam3.str().c_str(),nam2.str().c_str());
-		
-/*
 	// Calculates infoDim of all species minus the most abundant
+	//
 	nam3 << fname << "mfSin.txt" << ends;
 	for(i=0; i<NumSpecies; i++)
 		calcDiv[i]=true;
@@ -583,6 +590,7 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 		MFStats(dat,q,4,512,20,nam3.str().c_str(),nam2.str().c_str());
 	}
 */
+	delete []den;
 	delete []calcDiv;					
 	return tot;
 	};

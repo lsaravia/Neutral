@@ -154,9 +154,6 @@ int main(int argc, char * argv[])
 							if(!file.ReadSeed("q.sed", q))
 								exit(1);
 
-							//q(0) = 1;
-							//q(1) = 1;
-							//q(2) = 2;
 							ca.Convert(dat);
 							if(ca.Reordering(dat))
 								ca.MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,name.str().c_str(),nam1.str().c_str());
@@ -265,7 +262,7 @@ int ReadParms(char * pFile, IPSParms &p)
 	    {
     		parms >> p.idrPal;
 	    }
-   	    else if(buff=="mfDim") // Calcula generalized dimension S/N
+   	    else if(buff=="mfDim") // Calculates generalized dimension 	(S/N)
 	    {
     		parms >> p.mfDim;
 			p.mfDim = toupper( p.mfDim );
