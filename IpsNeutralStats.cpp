@@ -19,15 +19,26 @@ int IPSNeutral::Convert(simplmat <double> &data)
 	return 1;
 }
 
+
+/*double IPSNeutral::ConvertToBio(simplmat <double> &data, minB,MaxB)
+{
+	// Debe calcular densidades o leer de archivo, 
+	// conviene poner una simplmat den para usar y en caso de leer de archivo                                                                                                                                                                                                        siempre
+	// tomar la misma y no tener que leer muchas veces, usar siempre esa den para densidades.
+}
 // Converting to Biomass with M=aN^(-4/3) min=.2 max=200
 // 
-int IPSNeutral::ConvertToBio(simplmat <double> &data, double * den)
+*/
+
+double IPSNeutral::ConvertToBio(simplmat <double> &data, double * den)
 {
-	double dar=-4/3 // 1/(Damuth power)
-	double a=0,spc=0;
-	// set minimun value to 0.2 
-	double minB = DimX*DimY*0.1;
-	a = minB/(pow(0.2,(1/dar)));
+	double dar=-4.0/3.0;		 //  inverse of Damuth Power exponent
+	double a=0,maxBio = 400, minBio=0.1,totBio=0;  
+
+	// set minimun value to 0.2 to a density of 90% of the total
+	double maxN = DimX*DimY*0.9;
+	// Calculate the constant 
+	a = maxN/(pow(0.2,(1/dar)));
 
 	int dx,dy;
 	dx = data.getRows();
@@ -40,20 +51,20 @@ int IPSNeutral::ConvertToBio(simplmat <double> &data, double * den)
 		for(dx=0;dx<DimX; dx++)
 		{
 
-			spc = C(j,i).Specie;
+			int spc = C(dx,dy).Specie;
 			if( spc>0 )
 			{
-				if( den[spc-1]<minB )
-					data(dx,dy) = 0.2;
-				else 
-				{
-				    double bio  = pow(den[spc-1]/a,dar);
-				    if(bio>200) bio=200;
-				    data(dx,dy) = bio;
-				}
+			    double bio  = pow(den[spc-1]/a,dar);
+			    if(bio>maxBio) 
+			    	bio=maxBio;
+			    else if(bio<minBio) 
+			    	bio=minBio;
+
+				data(dx,dy) = bio;
+				totBio += bio;
 			}
 		}
-	return 1;
+	return totBio;
 }
 
 int IPSNeutral::Reordering(simplmat <double> &newdata )

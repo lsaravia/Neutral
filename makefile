@@ -22,8 +22,8 @@ I_DIRS=-I.. -I../../randlib/src -I../../fortify -I../../SpatialAnalysis/mfsba -I
 P_DEFS=-DGRAPHICS -DPOWER_DISP 
 #P_DEFS=-DGRAPHICS -DPOWER_DISP -DRANGE_CHECKING   
 
-CXXFLAGS = -O2 -g -Wall $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
-#CXXFLAGS = -g -Wall $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
+#CXXFLAGS = -O2 -g -Wall $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
+CXXFLAGS = -g -Wall $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
 
 L = -lm -lgrx20S -lSDL $(X11LIBS)
 
@@ -45,12 +45,6 @@ all:
 cabase.o: cabase.cpp cabase.hpp makefile
 
 bgi.o: bgi.cpp makefile
-
-#com.o : com.c makefile
-
-#linpack.o : linpack.c makefile
-
-#randlib.o : randlib.c makefile 
 
 IpsNeutral.o: IpsNeutral.cpp makefile IpsNeutral.h ran.hpp
 

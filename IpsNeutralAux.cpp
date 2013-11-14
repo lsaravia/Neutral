@@ -431,11 +431,13 @@ int  IPSNeutral::PrintDensity(const char *fname,const char *iname)
 	return tot;
 	};
 
-int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
+// toma IPSparms para calcular correctamente biomasa y mfDIM
+//
+int  IPSNeutral::PrintPomac(const char *fname,const char *iname,IPSParms p)
 {
 	ofstream dout;
 	static int privez=0;
-	double tot=0,totBio=0,totCells=DimX*DimY,diversity=0,freq=0,maxf=0;
+	double tot=0,totBio=0,totCells=DimX*DimY,diversity=0,freq=0,maxf=0,bioVol=0;
 	double * den = new double[NumSpecies];
 	int * calcDiv = new int[NumSpecies];
 	int a,i,maxi=0;
@@ -469,7 +471,7 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 	{
 		privez=0;
 		dout << iname <<"\tTime";
-		dout << "\tTot.Dens\tTot.Num\tRichness\tH\tRich>0.001\tH>0.001" << endl;
+		dout << "\tTot.Dens\tTot.Num\tRichness\tH\tRich>0.001\tH>0.001\tBiomass" << endl;
 		}
 
 	for(i=0; i<NumSpecies; i++)
@@ -536,9 +538,8 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 			richness++;
 		}
 			
-	dout << "\t" << richness << "\t" << -1*diversity << endl;
+	dout << "\t" << richness << "\t" << -1*diversity;
 
-	dout.close();
 	
 	nam2 << iname << "\t" << T << ends;
 
@@ -548,17 +549,27 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname)
 	if(!file.ReadSeed("q.sed", q))
 		exit(1);
 
+	// AGREGAR PARAMETROS PARA CALCULAR MF 
+	// Calculates Dq converting to bioVolume =aN^(-4/3) 
+	//
+	if(p.bioCalc=='S')
+	{
+		nam1 << fname << "mfBio.txt" << ends;
+		bioVol = ConvertToBio(dat,den);
+		MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam1.str().c_str(),nam2.str().c_str());
+	}
+	dout << "\t" << bioVol << endl;
+
+	dout.close();
 	
 	// Calculates Dq reordering species from the most abundant with 1 
 	//
 	nam3 << fname << "mfOrd.txt" << ends;
 
 	if(Reordering(dat))
-		MFStats(dat,q,4,512,20,nam3.str().c_str(),nam2.str().c_str());
+		MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam3.str().c_str(),nam2.str().c_str());
 	
-	// Calculates Dq converting to bioVolume =aN^(-4/3) 
-	//
-	nam3 << fname << "mfBio.txt" << ends;
+	
 
 
 /*

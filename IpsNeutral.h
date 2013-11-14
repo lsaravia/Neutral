@@ -53,6 +53,29 @@ class SpecieNeutral
 
 };
 
+struct IPSParms
+{
+	unsigned long nRuns;
+	unsigned long nEvals;
+	long rndSeed;
+	char gr;
+	int grBio;
+	unsigned long inter;
+	unsigned long init;
+	bool pomac;
+	int modType;
+	char de;
+	char sa;
+	char baseName[40];
+	char idrPal[40];
+	char mfDim;
+	float minBox;
+	float maxBox;
+	float deltaBox;
+	char bioCalc;
+	float bioMax;
+	float bioMin;
+};
 
 class IPSNeutral : public CABase
 {
@@ -97,7 +120,7 @@ class IPSNeutral : public CABase
    	void InitGraph(char * idrPal);
    	void InitGraph(){};
 	int  PrintDensity(const char *fname=NULL,const char *iname=NULL);
-	int  PrintPomac(const char *fname=NULL,const char *iname=NULL);
+	int  PrintPomac(const char *fname=NULL,const char *iname=NULL,IPSParms p);
 
 	int ReadSeed( char * fname, int mode);
 	int ReadSeed( char * fname){return ReadSeed( fname,0 );};
@@ -112,6 +135,8 @@ class IPSNeutral : public CABase
 	int Convert(simplmat <double> &data, const int specie );
 	int Reordering(simplmat <double> &newdata );
 	int AddConst(simplmat <double> &data, const double aa );
+	double ConvertToBio(simplmat <double> &data, double * den); 			// Convert to BioVol using Damuth -4/3 power law
+
 	
 	int MFStats(simplmat <double> &data, simplmat <double> &q,
 						int minBox, int maxBox, int deltaBox,const char * outFile,const char * ident);

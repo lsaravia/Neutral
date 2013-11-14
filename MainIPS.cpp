@@ -14,29 +14,6 @@
 using namespace std;
 
 
-struct IPSParms
-{
-	unsigned long nRuns;
-	unsigned long nEvals;
-	long rndSeed;
-	char gr;
-	int grBio;
-	unsigned long inter;
-	unsigned long init;
-	bool pomac;
-	int modType;
-	char de;
-	char sa;
-	char baseName[40];
-	char idrPal[40];
-	char mfDim;
-	float minBox;
-	float maxBox;
-	float deltaBox;
-	char patchStat;
-	char moranI;
-};
-
 int ReadParms(char * pFile, IPSParms &p);
 timespec diff(timespec start, timespec end);
 
@@ -50,6 +27,9 @@ int main(int argc, char * argv[])
 	if( argc > 1 )
 		{
 		ReadParms( argv[1], p );
+		//
+		// Debe hacer el calculo para biomasa en ReadParms 
+		// 
 		ca.ReadParms( p.rndSeed, argv[2] );
 		pvals = ca.PrintLineParms();
 		ca.InitParms(false);
@@ -111,6 +91,8 @@ int main(int argc, char * argv[])
 				
 				if( (i+1)>=p.init)
 				{	
+					// en PrintPomac sele puede pasar los parametros p para hacer 
+					// la salida en funcion de parametros leidos
 					if( p.pomac )
 						ca.PrintPomac( p.baseName, pvals.c_str() );
 					else
@@ -119,31 +101,25 @@ int main(int argc, char * argv[])
 							if( ca.PrintDensity( p.baseName, pvals.c_str() )== 0 )
 								break;
 						if( p.sa=='S' )
-							{
+						{
+					
 							ostringstream name;
 							name << p.baseName << "-" << (i+1) << ".sed" << ends;
 							ca.SaveSeed( name.str().c_str() );
-							}
-						if( p.patchStat=='S')
+							if( p.bioCalc=='S')
 							{
-							ostringstream name,nam1;
-							name << p.baseName << "Pat.txt" << ends;
-							nam1 << argv[2] << "-" << (i+1) << ends;
-							simplmat <double> dat;
-							ca.Convert(dat);
-							ca.PStats(dat,name.str().c_str(),nam1.str().c_str());
+								// Agregar salida de biomasa si corresponde
 							}
-						if( p.moranI=='S')
-							{
-							ostringstream name,nam1;
-							name << p.baseName << "MI.txt" << ends;
-							nam1 << argv[2] << "-"<< (i+1) << ends;
-							simplmat <double> dat;
-							ca.Convert(dat);
-							ca.MIStats(dat,name.str().c_str(),nam1.str().c_str());
-							}
+						}
+						
 						if( p.mfDim=='S')
+						{
+							if( p.bioCalc=='S')
 							{
+										// Agregar salida de biomasa si corresponde
+							}
+
+							
 							RWFile file;
 
 							ostringstream name,nam1;
@@ -157,7 +133,7 @@ int main(int argc, char * argv[])
 							ca.Convert(dat);
 							if(ca.Reordering(dat))
 								ca.MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,name.str().c_str(),nam1.str().c_str());
-							}
+						}
 					}
 				}
 
@@ -249,7 +225,7 @@ int ReadParms(char * pFile, IPSParms &p)
     		parms >> p.de;
 			p.de = toupper( p.de );
 	    }
-	    else if(buff=="sa") // Salva seed en cada muestreo
+	    else if(buff=="sa") // Salva seed en cada muestreo (S=Density/N=No/B=Biomass)
 	    {
     		parms >> p.sa;
 			p.sa = toupper( p.sa );
@@ -262,7 +238,7 @@ int ReadParms(char * pFile, IPSParms &p)
 	    {
     		parms >> p.idrPal;
 	    }
-   	    else if(buff=="mfDim") // Calculates generalized dimension 	(S/N)
+   	    else if(buff=="mfDim") // Calculates generalized dimension 	(S=Density/N=No)
 	    {
     		parms >> p.mfDim;
 			p.mfDim = toupper( p.mfDim );
@@ -279,15 +255,18 @@ int ReadParms(char * pFile, IPSParms &p)
 	    {
     		parms >> p.deltaBox;
 		}
-   	    else if(buff=="patchStat") // Patch statistics
+		else if(buff=="bioCalc") // Calculation of biomass with Damuth power (S/N)
 	    {
-    		parms >> p.patchStat;
-			p.patchStat = toupper( p.patchStat );
+	    	parms >> p.bioCalc;
+			p.bioCalc = toupper( p.bioCalc );
 		}
-   	    else if(buff=="moranI") // Patch statistics
+   	    else if(buff=="bioMax") // Maximum for calculation of biomass with Damuth power
 	    {
-    		parms >> p.moranI;
-			p.patchStat = toupper( p.moranI );
+    		parms >> p.bioMax;
+		}
+   	    else if(buff=="bioMin") // Minimun for calculation of biomass with Damuth power
+	    {
+    		parms >> p.bioMin;
 		}
 		else if( !buff.empty() )
 		{
