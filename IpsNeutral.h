@@ -120,7 +120,7 @@ class IPSNeutral : public CABase
    	void InitGraph(char * idrPal);
    	void InitGraph(){};
 	int  PrintDensity(const char *fname=NULL,const char *iname=NULL);
-	int  PrintPomac(const char *fname=NULL,const char *iname=NULL,IPSParms p);
+	int  PrintPomac(IPSParms p,const char *fname=NULL,const char *iname=NULL);
 
 	int ReadSeed( char * fname, int mode);
 	int ReadSeed( char * fname){return ReadSeed( fname,0 );};
@@ -135,14 +135,18 @@ class IPSNeutral : public CABase
 	int Convert(simplmat <double> &data, const int specie );
 	int Reordering(simplmat <double> &newdata );
 	int AddConst(simplmat <double> &data, const double aa );
-	double ConvertToBio(simplmat <double> &data, double * den); 			// Convert to BioVol using Damuth -4/3 power law
+
+	double ConvertToBio(simplmat <double> &data, double * den,float bioMax,float bioMin);
+
+	double ConvertToBio(simplmat <double> &data, float bioMax, float bioMin); 			// Convert to BioVol using Damuth -4/3 power law
 
 	
 	int MFStats(simplmat <double> &data, simplmat <double> &q,
 						int minBox, int maxBox, int deltaBox,const char * outFile,const char * ident);
 						
-	int MIStats(simplmat <double> &data, const char * outFile, const char * ident);       // Moran's I Rook 
-	
+	//int PrintDenBio(const char * outFile, const char * ident);       // Print biomass of each species
+	int PrintDenBio(double * den, float bioMax,float bioMin, const char * fname, const char * ident);
+
 				
 };
 

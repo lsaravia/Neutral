@@ -94,7 +94,7 @@ int main(int argc, char * argv[])
 					// en PrintPomac sele puede pasar los parametros p para hacer 
 					// la salida en funcion de parametros leidos
 					if( p.pomac )
-						ca.PrintPomac( p.baseName, pvals.c_str() );
+						ca.PrintPomac( p, p.baseName, pvals.c_str() );
 					else
 					{
 						if( p.de=='S')
@@ -119,7 +119,7 @@ int main(int argc, char * argv[])
 										// Agregar salida de biomasa si corresponde
 							}
 
-							
+
 							RWFile file;
 
 							ostringstream name,nam1;

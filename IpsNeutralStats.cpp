@@ -20,25 +20,82 @@ int IPSNeutral::Convert(simplmat <double> &data)
 }
 
 
-/*double IPSNeutral::ConvertToBio(simplmat <double> &data, minB,MaxB)
-{
-	// Debe calcular densidades o leer de archivo, 
-	// conviene poner una simplmat den para usar y en caso de leer de archivo                                                                                                                                                                                                        siempre
-	// tomar la misma y no tener que leer muchas veces, usar siempre esa den para densidades.
-}
 // Converting to Biomass with M=aN^(-4/3) min=.2 max=200
 // 
-*/
-
-double IPSNeutral::ConvertToBio(simplmat <double> &data, double * den)
+// The Biomass spectrum is calculated dynamically according to the actual densities 
+// Assuming the minimun biomass to a species with a frequency = 0.9 (very dominant)
+//
+double IPSNeutral::ConvertToBio(simplmat <double> &data, double * den,float bioMax,float bioMin)
 {
 	double dar=-4.0/3.0;		 //  inverse of Damuth Power exponent
-	double a=0,maxBio = 400, minBio=0.1,totBio=0;  
+	double a=0,totBio=0;  
 
-	// set minimun value to 0.2 to a density of 90% of the total
+	// set minimun value bioMin to a density of 90% of the total
 	double maxN = DimX*DimY*0.9;
 	// Calculate the constant 
-	a = maxN/(pow(0.2,(1/dar)));
+	a = maxN/(pow(bioMin,(1/dar)));
+
+  	int dx,dy;
+ 	dx = data.getRows();
+ 	dy = data.getCols();
+
+	if( dx!=DimX || dy!=DimY )
+		data.resize(DimX, DimY, 0.0);
+
+	for(dy=0;dy<DimY; dy++)
+		for(dx=0;dx<DimX; dx++)
+ 		{
+ 
+			int spc = C(dx,dy).Specie;
+ 			if( spc>0 )
+ 			{
+			    double bio  = pow(den[spc-1]/a,dar);
+			    if(bio>bioMax) 
+			    	bio=bioMax;
+			    else if(bio<bioMin) 
+			    	bio=bioMin;
+
+				data(dx,dy) = bio;
+				totBio += bio;
+ 			}
+ 		}
+	return totBio;
+	
+}
+
+
+
+// Converting to Biomass with M=aN^(-4/3) min=.2 max=200
+// 
+// The Biomass spectrum is determined by the densities in the metacommunity
+// this is valid for strictly neutral models
+
+double IPSNeutral::ConvertToBio(simplmat <double> &data, float bioMax, float bioMin)
+{
+	double dar=-4.0/3.0;		 //  inverse of Damuth Power exponent
+	double a=0,totBio=0; 
+	static bool privez=true;
+
+	if(privez)
+	{
+		// set minimun value of Biomass to a density of the most abundant specie
+		// assumes the most abundant is the last specie
+		double maxN = Sp[NumSpecies].BirthRate;
+		// Calculate the constant 
+		a = maxN/(pow(bioMin,(1/dar)));
+		// BirthRate have the density in the metacommunity I replace it with biomass
+		for(int i=1; i<=NumSpecies; i++ )
+		{
+			double denMeta = Sp[i].BirthRate;
+			double bio  = pow(Sp[i].BirthRate/a,dar);
+		    if(bio>bioMax) 
+		    	bio=bioMax;
+		    else if(bio<bioMin) 
+		    	bio=bioMin;
+			Sp[i].BirthRate = bio;
+		}
+		privez=false;
+	}
 
 	int dx,dy;
 	dx = data.getRows();
@@ -54,14 +111,8 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, double * den)
 			int spc = C(dx,dy).Specie;
 			if( spc>0 )
 			{
-			    double bio  = pow(den[spc-1]/a,dar);
-			    if(bio>maxBio) 
-			    	bio=maxBio;
-			    else if(bio<minBio) 
-			    	bio=minBio;
-
-				data(dx,dy) = bio;
-				totBio += bio;
+				data(dx,dy) = Sp[spc].BirthRate;
+				totBio += Sp[spc].BirthRate;
 			}
 		}
 	return totBio;
@@ -192,10 +243,4 @@ int IPSNeutral::MFStats(simplmat <double> &data, simplmat <double> &q,
 	return 	MultifractalSBA(data, q,const_cast<char *>(outFile) ,minBox, maxBox, deltaBox, 'S',const_cast<char *>(ident));
 }
 
-
-int IPSNeutral::MIStats(simplmat <double> &data, const char * outFile,const char * ident)
-{
-	// return MoranIRook(data, outFile, ident);
-	return 0;
-}
 

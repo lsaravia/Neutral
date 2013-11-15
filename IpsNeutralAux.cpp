@@ -433,7 +433,7 @@ int  IPSNeutral::PrintDensity(const char *fname,const char *iname)
 
 // toma IPSparms para calcular correctamente biomasa y mfDIM
 //
-int  IPSNeutral::PrintPomac(const char *fname,const char *iname,IPSParms p)
+int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 {
 	ofstream dout;
 	static int privez=0;
@@ -442,7 +442,7 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname,IPSParms p)
 	int * calcDiv = new int[NumSpecies];
 	int a,i,maxi=0;
 	unsigned richness=0;
-	ostringstream nam1,nam2,nam3;
+
 
 	if( fname!=NULL )
 	{
@@ -540,22 +540,26 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname,IPSParms p)
 			
 	dout << "\t" << richness << "\t" << -1*diversity;
 
-	
+	ostringstream nam2;
 	nam2 << iname << "\t" << T << ends;
 
+	// Read q file for Multifractal spectrum
 	simplmat <double> dat;
 	simplmat <double> q;
 	RWFile file;
 	if(!file.ReadSeed("q.sed", q))
 		exit(1);
 
-	// AGREGAR PARAMETROS PARA CALCULAR MF 
 	// Calculates Dq converting to bioVolume =aN^(-4/3) 
 	//
 	if(p.bioCalc=='S')
 	{
+		ostringstream nam1;
 		nam1 << fname << "mfBio.txt" << ends;
-		bioVol = ConvertToBio(dat,den);
+		bioVol = ConvertToBio(dat, den, p.bioMax,p.bioMin);
+		// Print the biomass spectrum
+		PrintDenBio(den, p.bioMax,p.bioMin,fname,nam2.str().c_str());   
+
 		MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam1.str().c_str(),nam2.str().c_str());
 	}
 	dout << "\t" << bioVol << endl;
@@ -564,13 +568,15 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname,IPSParms p)
 	
 	// Calculates Dq reordering species from the most abundant with 1 
 	//
+	
+
+	ostringstream nam3;
 	nam3 << fname << "mfOrd.txt" << ends;
 
 	if(Reordering(dat))
 		MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam3.str().c_str(),nam2.str().c_str());
 	
 	
-
 
 /*
 	// Calculates Dq with q.sed for the most abundant specie
@@ -605,6 +611,76 @@ int  IPSNeutral::PrintPomac(const char *fname,const char *iname,IPSParms p)
 	delete []calcDiv;					
 	return tot;
 	};
+
+int IPSNeutral::PrintDenBio(double * den, float bioMax,float bioMin, const char * fname, const char * ident)
+{
+	static bool privez=false;
+	ofstream dout;
+
+	if( fname!=NULL )
+	{
+		ostringstream name;
+		name << fname << "DenBio.txt" << ends;
+		dout.open( name.str().c_str(), ios::in );
+		if( !dout )
+			privez=true;
+
+		dout.close();
+        dout.clear();
+		dout.open( name.str().c_str(), ios::app );
+		if( !dout )
+		{
+			cerr << "Cannot open density file.\n";
+			return 0;
+		}
+	}
+	else
+	{
+		cerr << "File name cannot be NULL\n";
+		return 0;		
+	}
+
+	if( privez )
+	{
+		privez=false;
+		dout << ident <<"\tTime";
+		for( int i=0; i<NumSpecies; i++)
+			{
+			//dout.width(6);
+			dout <<  "\t" << (i+1);
+			}
+		//dout << "\tTot.Dens\tTot.Num\tRichness\tH\tRich>0.001\tH>0.001" << endl;
+		dout << "\tTot.Bio" << endl;
+	}
+	dout << ident << "\t" << T;
+
+/*
+	for(int i=1; i<=NumSpecies; i++ )
+	{	
+		dout << "\t" << Sp[i].BirthRate;
+	}
+*/
+	double dar=-4.0/3.0;		 //  inverse of Damuth Power exponent
+	double a=0,totBio=0;  
+
+	// set minimun value bioMin to a density of 90% of the total
+	double maxN = DimX*DimY*0.9;
+	// Calculate the constant 
+	a = maxN/(pow(bioMin,(1/dar)));
+	for(int i=0; i<NumSpecies; i++ )
+	{	
+		double bio  = pow(den[i]/a,dar);
+	    if(bio>bioMax) 
+	    	bio=bioMax;
+	    else if(bio<bioMin) 
+	    	bio=bioMin;
+
+	    dout << "\t" << bio;
+		totBio += bio*den[i];
+	}
+	dout << "\t" << totBio << endl;
+	return(1);
+}
 
 int IPSNeutral::ReadIdrisi( char * fname, int mode )
 	{

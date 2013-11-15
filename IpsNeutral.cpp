@@ -440,7 +440,10 @@ void IPSNeutral::InitParms(const bool pomac)
 			for(i=1; i<=NumSpecies; i++ )
 				Sp[i].ColonizationRate /= GlobalRate;
 		}
-
+		
+		for(i=1; i<=NumSpecies; i++ )
+				Sp[i].BirthRate = Sp[i].ColonizationRate*DimX*DimY;
+			
 		for(i=2; i<=NumSpecies; i++)     // Probabilidad acumulada 
 		{
 			Sp[i].ColonizationRate += Sp[i-1].ColonizationRate;

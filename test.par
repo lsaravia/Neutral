@@ -13,6 +13,7 @@ mfDim S
 minBox 4
 maxBox 512
 deltaBox 20
+bioCalc S
 bioMax 400
 bioMin 0.1
 pomac 1
