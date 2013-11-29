@@ -27,6 +27,8 @@ void IPSNeutral::Init( unsigned numSp, int dimX, int dimY, int rr )
 	{
 	CABase::Init(numSp, dimX, dimY,rr);
 
+	ran.init(rr);
+
 	C.resize(dimX,dimY);
 
 	//	ActualSp = 0;

@@ -1,61 +1,63 @@
-# PARAMETROS de Linea de Commandos
+# Model description
+
+## Command Line arguments 
 
 ipsNeutral file.par file.inp file.sed/file.set
 
-All files are plain text. The first two files are required.
+- All files are plain text. 
+- The first two files are required.
 
-**file.par** have the simulation's parameters
-**file.inp** have the species's parameters
+- **file.par** have the simulation's parameters
+- **file.inp** have the species's parameters
 
-The other files **sed** and **inp** are for set initial conditions, they can not be used  both at the same time.
+The other files **sed** and **inp** set initial conditions, they can not be used both at the same time.
 
-# file.par
+## File structure
 
-It has the simulation's parameters and kind of outputs the model will calculate.
+### file.par
+
+It has the simulation's parameters and select the outputs the model will calculate.
 
 1. *gr*		: Graphic output S/N
 
-2. *nRuns*		: número de corridas con este set de parametros
+2. *nRuns*		: Number of runs with the same set of parameters
 
-3. *nEvals*		: número de pasos de tiempo (tiempo maximo)
+3. *nEvals*		: Number of steps in a run (End time)
 
-4. *rndSeed*		: semilla para el generador de nros al azar, si es 0 toma el time
+4. *rndSeed*	: Seed to random number generator if 0 takes time.
 
-5. *inter*		: intervalo en pasos para mostrar grafico y/o 
-		  hacer salidad de datos y/o tomar informacion para promedios
+5. *inter*		: Step interval for doing output graphic/data/spatial state
 
-6. *init*		: numero de pasos a partir del cual inicia la toma de datos o muestra en pantalla
+6. *init*		: Step for start data collection or graphics 
 
-7. *modType*	: 1=Modelo neutral no saturado, 2=Modelo neutral saturado, 
-		 	3=Modelo jerarquico no saturado, 4=Modelo jerarquico saturado.
+7. *modType*	: 1=Non saturated neutral model, 2=Neutral saturated (zero-sum) model, 
+	 	3=Hierarchical non saturated, 4=Hierarchical saturated.
 
-8	*de*		: imprime densidad de especies, Riqueza y diversidad de Shanonn. 
+8.	*de*		: Output species density, richness, and Shannon index. 
 
-9.	*sa*		: Guarda el estado del modelo en formato sed a partir de [inicio] 
-				y con la periodicidad especificada en [inter]
+9.	*sa*		: Save state of the model in sed format each [inter] steps from [init] time  
 
-10.	*baseName*	: Nombre de Archivo para salvar archivos sed y demas salidas.
+10.	*baseName*	: Base file name for output.
 
-11. *idrPal*	: Paleta de colores idrisi utilizada en salida grafica (NO IMPLEMENTADO)
+11. *idrPal*	: Color palette for graphics (Not working)
 
-12.	*patchStat*	: Calculo de estadisticas de parche (NO IMPLEMENTADO)
-
-13.	*mfDim* 	: Calculo de espectro multifractal Dq por box-counting toma un 
-		archivo q.sed para los q del espectro completo.
+13.	*mfDim* 	: Multifractal spectrum calculation (S/N), to specifiy the q uses a file named q.sed.
 		
-14: *minBox* 	:  tamaño de box minimo
-15: *maxBox*	:  tamaño de box máximo, este valor se modifica para que no sea mayor
-		que la mitad del tamaño de la grilla DimX
-16.	*deltaBox*	: cantidad de intervalos, tambien se modifica para que sean potencias
-		de 2
+14. *minBox* 	: Min box size for Multifractal spectrum
+
+15. *maxBox*	: Max box size for Multifractal spectrum.
+
+16.	*deltaBox*	: The program uses powers of 2 intervals, but if you want to restric the number of intervals you can use this parameter.
 		
-17. *moranI*	: Calculo de indice de correlacion I de Moran (No Implementado)
+8.	*pomac*		: (S/N) Takes parameters line by line from a file named pomac.lin and does a special output coded in the function IPSNeutral::PrintPomac.
 
-18.	*pomac*		: S/N Toma los parametros de un archivo llamado pomac.lin y hace una 
-	salida especial resumida
+9.	*bioCalc*	: Calculates biomass based in an inverse Damuth rule, M=aN^(-4/3)  between a range of biomasses. The biomass is added to any other outputs requested.
 
+10. *bioMax*	: Maximun biomass
 
-# ARCHIVO sed
+11. *bioMin*	: Minimun biomass 
+
+### File.sed
 
 sed: archivo de condiciones iniciales -> Posiciones espaciales, especie, edad, Habitat.
 
@@ -68,7 +70,7 @@ La estructura es la siguiente
 	Matriz de numeros de DIMX x DIMY con la posicion de las especies
 
 
-# ARCHIVO set
+### File.set
 
 archivo de condiciones iniciales -> siembra al azar individuos de cierta especie y edad
 esta compuesto de lineas con la siguiente estructura
@@ -76,7 +78,7 @@ esta compuesto de lineas con la siguiente estructura
 	especie edad cantidad [posicion x maxima] [habitat]
 	
 
-# FILE **inp**
+### FILE.**inp**
 
 Parametros del modelo y frecuencia de especies en la comunidad
 Con la siguiente estructura de lineas
@@ -103,7 +105,7 @@ The structure of the lines MetacommunityFrequency is:
 
 
 	
-# Dispersal functions
+## Dispersal functions
 
 There are 3 diferent kinds of dispersal functions set at compile time using a macro definition in the makefile, for the following formulas: dd = DispersalDistance
 
@@ -113,4 +115,4 @@ UNIFORM_DISP defines a uniform distribution between 0 and dd with mean =dd/2
 
 POWER_DISP defines an inverse power distribution f(x) = (dd-1)*pow(x,-dd) with mean = dd-1/(dd-2)
   
-The mean is not a good measure to the size of the clusters that form in the model.
+

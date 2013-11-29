@@ -315,17 +315,21 @@ void IPSNeutral::RandomSetSeed(int sp,unsigned age, int no, int minX)
 		}
 	}
 
-
-int  IPSNeutral::PrintDensity(const char *fname,const char *iname)
+// DENTRO DE ESTA FUNCION CALCULA BIOMASA Y GUARDA y CALCULA ESPECTRO
+//
+int  IPSNeutral::PrintDensity(IPSParms p,const char *fname,const char *iname)
 {
 	ofstream dout;
 	static int privez=0;
-	double tot=0,totBio=0,totCells=DimX*DimY,diversity=0,freq=0;
-	double * den = new double[NumSpecies];
+	double tot=0,totBio=0,totCells=DimX*DimY,diversity=0,freq=0,bioVol=0;
+	simplmat <double> den(NumSpecies);
+	//simplmat <int> calcDiv(NumSpecies);
+	//double * den = new double[NumSpecies];
 	int * calcDiv = new int[NumSpecies];
 	int a,i;
 	unsigned richness=0;
 
+	
 	if( fname!=NULL )
 	{
 		ostringstream name;
@@ -358,32 +362,26 @@ int  IPSNeutral::PrintDensity(const char *fname,const char *iname)
 			//dout.width(6);
 			dout <<  "\t" << (a+1);
 			}
-		dout << "\tTot.Dens\tTot.Num\tRichness\tH\tRich>0.001\tH>0.001" << endl;
-		}
-
-	for(i=0; i<NumSpecies; i++)
-	{
-		den[i]=0;
-		calcDiv[i]=0;
+		dout << "\tTot.Dens\tTot.Num\tRichness\tH\tRich>0.001\tH>0.001\tBiomass\tAvg.Bio" << endl;
 	}
-	
-	for(i=0; i<DimY; i++)
-		for(int j=0;j<DimX;j++)
-			{
-			a = C(j,i).Elem();
-			if( a>0 )
-				den[ a-1 ]++;
-			}
+
 	if( iname==NULL )
 		dout << T ;
 	else
 		dout << iname << "\t" << T ;
+	
+	// Calculates species densities
+	//
+	CalcDensity(den);
+	for(i=0; i<NumSpecies; i++)
+		calcDiv[i]=0;
+	
 
 	for( i=0; i<NumSpecies; i++)
 	{
-		freq = den[i]/totCells;
+		freq = den(i)/totCells;
 		dout << "\t" << freq;
-		tot+= den[i];
+		tot+= den(i);
 		totBio+= freq;
 		if(freq>0.0) 
 		{
@@ -400,7 +398,7 @@ int  IPSNeutral::PrintDensity(const char *fname,const char *iname)
 		diversity=0.0;
 		for( i=0; i<NumSpecies; i++)
 		{
-			freq = den[i]/tot;
+			freq = den(i)/tot;
 			if(freq>0.0) 
 				diversity += freq * log(freq);
 		}
@@ -413,23 +411,32 @@ int  IPSNeutral::PrintDensity(const char *fname,const char *iname)
 	totCells = diversity = richness = 0;
 	for( i=0; i<NumSpecies; i++)
 		if( calcDiv[i] )
-			totCells+=den[i];
+			totCells+=den(i);
 			
 	for( i=0; i<NumSpecies; i++)
 		if( calcDiv[i] )
 		{
-			freq = den[i]/totCells;
+			freq = den(i)/totCells;
 			diversity += freq * log(freq);
 			richness++;
 		}
 			
-	dout << "\t" << richness << "\t" << -1*diversity << endl;
+	dout << "\t" << richness << "\t" << -1*diversity;
 
-	delete []den;
-	delete []calcDiv;
+	if(p.bioCalc=='S')
+	{
+		ostringstream nam2;
+		nam2 << iname << "\t" << T << ends;
+
+		// Print the biomass spectrum
+		bioVol = PrintDenBio(den, p.bioMax,p.bioMin,fname,nam2.str().c_str());   
+	}
+	dout << "\t" << bioVol << "\t" << bioVol/tot << endl;
+
 	dout.close();
+	delete []calcDiv;
 	return tot;
-	};
+};
 
 // toma IPSparms para calcular correctamente biomasa y mfDIM
 //
@@ -438,9 +445,10 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 	ofstream dout;
 	static int privez=0;
 	double tot=0,totBio=0,totCells=DimX*DimY,diversity=0,freq=0,maxf=0,bioVol=0;
-	double * den = new double[NumSpecies];
+	simplmat <double> den(NumSpecies);
+	//double * den = new double[NumSpecies];
 	int * calcDiv = new int[NumSpecies];
-	int a,i,maxi=0;
+	int maxi=0,i;
 	unsigned richness=0;
 
 
@@ -471,29 +479,27 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 	{
 		privez=0;
 		dout << iname <<"\tTime";
-		dout << "\tTot.Dens\tTot.Num\tRichness\tH\tRich>0.001\tH>0.001\tBiomass" << endl;
+		dout << "\tTot.Dens\tTot.Num\tRichness\tH\tRich>0.001\tH>0.001\tBiomass\tAvg.Bio" << endl;
 		}
 
 	for(i=0; i<NumSpecies; i++)
-		den[i]=calcDiv[i]=0;
+		calcDiv[i]=0;
 	
-	
-	for(i=0; i<DimY; i++)
-		for(int j=0;j<DimX;j++)
-			{
-			a = C(j,i).Elem();
-			if( a>0 )
-				den[ a-1 ]++;
-			}
+	// Calculate species' densities
+	//
+	CalcDensity(den);
+
 	if( iname==NULL )
 		dout << T ;
 	else
 		dout << iname << "\t" << T ;
 
+	// Calculate Shannon Richness and the most abundant species
+	//
 	for( i=0; i<NumSpecies; i++)
 	{
-		freq = den[i]/totCells;
-		tot+= den[i];
+		freq = den(i)/totCells;
+		tot+= den(i);
 		totBio+= freq;
 		if(freq>0.0) 
 		{
@@ -515,7 +521,7 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 		diversity=0.0;
 		for( i=0; i<NumSpecies; i++)
 		{
-			freq = den[i]/tot;
+			freq = den(i)/tot;
 			if(freq>0.0) 
 				diversity += freq * log(freq);
 		}
@@ -528,12 +534,12 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 	totCells = diversity = richness = 0.0;
 	for( i=0; i<NumSpecies; i++)
 		if( calcDiv[i] )
-			totCells+=den[i];
+			totCells+=den(i);
 			
 	for( i=0; i<NumSpecies; i++)
 		if( calcDiv[i] )
 		{
-			freq = den[i]/totCells;
+			freq = den(i)/totCells;
 			diversity += freq * log(freq);
 			richness++;
 		}
@@ -544,6 +550,7 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 	nam2 << iname << "\t" << T << ends;
 
 	// Read q file for Multifractal spectrum
+	//
 	simplmat <double> dat;
 	simplmat <double> q;
 	RWFile file;
@@ -562,18 +569,16 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 
 		MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam1.str().c_str(),nam2.str().c_str());
 	}
-	dout << "\t" << bioVol << endl;
+	dout << "\t" << bioVol << "\t" << bioVol/tot << endl;
 
 	dout.close();
 	
 	// Calculates Dq reordering species from the most abundant with 1 
 	//
-	
-
 	ostringstream nam3;
 	nam3 << fname << "mfOrd.txt" << ends;
 
-	if(Reordering(dat))
+	if(Reordering(dat,den))
 		MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam3.str().c_str(),nam2.str().c_str());
 	
 	
@@ -607,12 +612,11 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 		MFStats(dat,q,4,512,20,nam3.str().c_str(),nam2.str().c_str());
 	}
 */
-	delete []den;
 	delete []calcDiv;					
 	return tot;
 	};
 
-int IPSNeutral::PrintDenBio(double * den, float bioMax,float bioMin, const char * fname, const char * ident)
+double IPSNeutral::PrintDenBio(simplmat <double> &den, float bioMax,float bioMin, const char * fname, const char * ident)
 {
 	static bool privez=false;
 	ofstream dout;
@@ -652,7 +656,7 @@ int IPSNeutral::PrintDenBio(double * den, float bioMax,float bioMin, const char 
 		//dout << "\tTot.Dens\tTot.Num\tRichness\tH\tRich>0.001\tH>0.001" << endl;
 		dout << "\tTot.Bio" << endl;
 	}
-	dout << ident << "\t" << T;
+	dout << ident;  // Parameters and time
 
 /*
 	for(int i=1; i<=NumSpecies; i++ )
@@ -661,7 +665,7 @@ int IPSNeutral::PrintDenBio(double * den, float bioMax,float bioMin, const char 
 	}
 */
 	double dar=-4.0/3.0;		 //  inverse of Damuth Power exponent
-	double a=0,totBio=0;  
+	double a=0.0,totBio=0.0;  
 
 	// set minimun value bioMin to a density of 90% of the total
 	double maxN = DimX*DimY*0.9;
@@ -669,17 +673,17 @@ int IPSNeutral::PrintDenBio(double * den, float bioMax,float bioMin, const char 
 	a = maxN/(pow(bioMin,(1/dar)));
 	for(int i=0; i<NumSpecies; i++ )
 	{	
-		double bio  = pow(den[i]/a,dar);
+		double bio  = pow(den(i)/a,dar);
 	    if(bio>bioMax) 
 	    	bio=bioMax;
 	    else if(bio<bioMin) 
 	    	bio=bioMin;
 
 	    dout << "\t" << bio;
-		totBio += bio*den[i];
+		totBio += bio*den(i);
 	}
 	dout << "\t" << totBio << endl;
-	return(1);
+	return(totBio);
 }
 
 int IPSNeutral::ReadIdrisi( char * fname, int mode )

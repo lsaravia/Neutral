@@ -12,6 +12,13 @@ struct Ranf1 {
 		v = int64();
 	}
 
+	inline void init(Ullint j){
+		if(j>0){
+		v = 4101842887655102017LL ^ j;
+		v = int64();
+		}
+	}
+
 	inline Ullint int64() {
 		v ^= v >> 21; v ^= v << 35; v ^= v >> 4;
 		return v * 2685821657736338717LL;

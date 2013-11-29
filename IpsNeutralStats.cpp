@@ -3,6 +3,25 @@
 
 using namespace std;
 
+
+void IPSNeutral::CalcDensity(simplmat <double> &den)
+{
+	if(den.getRows()!=NumSpecies)
+		den.resize(NumSpecies);
+	
+	den.fill(0.0);
+	
+	// Calculate species' densities
+	//
+	for(int i=0; i<DimY; i++)
+		for(int j=0;j<DimX;j++)
+			{
+			int a = C(j,i).Elem();
+			if( a>0 )
+				den( a-1 )++;
+			}
+}
+
 int IPSNeutral::Convert(simplmat <double> &data)
 {
 	int dx,dy;
@@ -20,14 +39,14 @@ int IPSNeutral::Convert(simplmat <double> &data)
 }
 
 
-// Converting to Biomass with M=aN^(-4/3) min=.2 max=200
+// Converting to Biomass with M=aN^(-4/3) between a range min & max
 // 
 // The Biomass spectrum is calculated dynamically according to the actual densities 
 // Assuming the minimun biomass to a species with a frequency = 0.9 (very dominant)
 //
-double IPSNeutral::ConvertToBio(simplmat <double> &data, double * den,float bioMax,float bioMin)
+double IPSNeutral::ConvertToBio(simplmat <double> &data, simplmat <double> &den,float bioMax,float bioMin)
 {
-	double dar=-4.0/3.0;		 //  inverse of Damuth Power exponent
+	double dar=-4.0/3.0;		 // inverse of Damuth Power exponent
 	double a=0,totBio=0;  
 
 	// set minimun value bioMin to a density of 90% of the total
@@ -49,7 +68,7 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, double * den,float bioM
 			int spc = C(dx,dy).Specie;
  			if( spc>0 )
  			{
-			    double bio  = pow(den[spc-1]/a,dar);
+			    double bio  = pow(den(spc-1)/a,dar);
 			    if(bio>bioMax) 
 			    	bio=bioMax;
 			    else if(bio<bioMin) 
@@ -65,7 +84,7 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, double * den,float bioM
 
 
 
-// Converting to Biomass with M=aN^(-4/3) min=.2 max=200
+// Converting to Biomass with M=aN^(-4/3) between a range min & max
 // 
 // The Biomass spectrum is determined by the densities in the metacommunity
 // this is valid for strictly neutral models
@@ -86,7 +105,7 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, float bioMax, float bio
 		// BirthRate have the density in the metacommunity I replace it with biomass
 		for(int i=1; i<=NumSpecies; i++ )
 		{
-			double denMeta = Sp[i].BirthRate;
+			//double denMeta = Sp[i].BirthRate;
 			double bio  = pow(Sp[i].BirthRate/a,dar);
 		    if(bio>bioMax) 
 		    	bio=bioMax;
@@ -167,6 +186,43 @@ int IPSNeutral::Reordering(simplmat <double> &newdata )
 	return(1);
 }
 
+// Uses an previously calculated vector of densities
+//
+int IPSNeutral::Reordering(simplmat <double> &newdata, simplmat <double> &den )
+{
+	int i,a,maxi;
+	if( newdata.getRows()!=DimX || newdata.getCols()!=DimY)
+		newdata.resize(DimX,DimY,0.0);
+	else
+		newdata.fill(0.0);
+		
+	double maxDen;
+	
+	int newSpecie=0;
+	while(newSpecie<NumSpecies)
+	{
+		maxDen=maxi=0;
+		for( i=0; i<NumSpecies; i++)
+			if(den(i)>maxDen)
+				{
+					maxi=i+1;
+					maxDen=den(i);
+				}
+		if (maxDen==0) break;
+		
+		//cout << maxi << "-" << maxDen << "\t";
+		newSpecie++;
+		for(i=0; i<DimY; i++)
+			for(int j=0;j<DimX;j++)
+				{
+				a = C(j,i).Specie;
+				if( a==maxi )
+					newdata(j,i)=newSpecie;
+				}
+		den(maxi-1)=0;
+	}
+	return(1);
+}
 
 
 // Convierte la matriz de especies solo con las que estan en species
