@@ -97,6 +97,9 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, float bioMax, float bio
 
 	if(privez)
 	{
+		for(int i=1; i<=NumSpecies; i++ )
+			Sp[i].BirthRate = Sp[i].ColonizationRate*DimX*DimY;
+
 		// set minimun value of Biomass to a density of the most abundant specie
 		// assumes the most abundant is the last specie
 		double maxN = Sp[NumSpecies].BirthRate;

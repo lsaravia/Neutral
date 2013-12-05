@@ -18,12 +18,12 @@ SDLDEFS = -D__XWIN__
 I_DIRS=-I.. -I../../randlib/src -I../../SpatialAnalysis/mfsba -I../../SpatialAnalysis
 
 #P_DEFS=-DGRAPHICS -DEXP_DISP 
-P_DEFS=-DGRAPHICS -DUNIFORM_DISP 
-#P_DEFS=-DGRAPHICS -DPOWER_DISP 
+#P_DEFS=-DGRAPHICS -DUNIFORM_DISP 
+P_DEFS=-DGRAPHICS -DPOWER_DISP 
 #P_DEFS=-DGRAPHICS -DPOWER_DISP -DRANGE_CHECKING   
 
-CXXFLAGS = -O2 -g -Wall $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
-#CXXFLAGS = -g -Wall $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
+#CXXFLAGS = -O2 -g -Wall $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
+CXXFLAGS = -g -Wall $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
 
 L = -lm -lgrx20S -lSDL $(X11LIBS)
 
@@ -32,7 +32,7 @@ O=bgi.o cabase.o IpsNeutralCont.o mfSBA.o RWFile.o\
 	IpsNeutralAux.o IpsNeutralStats.o MainIPS.o 
 
 
-MAIN_TARGET=IpsNeutralCont
+MAIN_TARGET=ipsNeutralCont
 all: $(O)
 	g++ -o $(MAIN_TARGET) $(O) $(L)
 

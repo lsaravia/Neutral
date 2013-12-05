@@ -285,8 +285,16 @@ void IPSNeutral::EvalCellHierarchy(int x,int y)
 				for(i=1; i<=NumSpecies; i++)
 					if(rnd<Sp[i].ColonizationRate)
 					{							// La reemplaza si la especie invasora es menor
-						if( actSp>i) 			
-							C(x,y).Specie=i;	
+						if( actSp>i)
+#ifdef  HIERARCHICAL_CONT
+						{
+							rnd = Rand();
+							if(rnd<Sp[0].ReplacementRate)
+								C(x,y).Specie=i;	
+						}
+#else		
+							C(x,y).Specie=i;
+#endif
 						break;
 					}
 			}
@@ -302,14 +310,24 @@ void IPSNeutral::EvalCellHierarchy(int x,int y)
 #elif defined UNIFORM_DISP
 				EuclideanDispersal(x,y,x1,y1);
 #endif
+
+#ifdef HIERARCHICAL_CONT
 				// The actual species send a propagule to the neigborhood 
 				//
-				//int & dSp= C(x1,y1).Specie;
-				//if( dSp > actSp  || (dSp==0) ) 
-				//	dSp = actSp;
+				int & dSp= C(x1,y1).Specie;
+				if( dSp > actSp )
+				{
+					rnd = Rand();
+					if(rnd<Sp[0].ReplacementRate)
+						dSp = actSp;
+				}
+				else if(dSp==0)  
+					dSp = actSp;
+#else
 				int dSp= C(x1,y1).Specie;
 				if( dSp>0 && dSp < actSp)
 					C(x,y).Specie = dSp;
+#endif				
 			}
         }
 	}
@@ -400,7 +418,15 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 					if(rnd<Sp[i].ColonizationRate)
 					{							// La reemplaza si la especie invasora es menor
 						if( actSp>i) 			
+#ifdef HIERARCHICAL_CONT
+						{	
+							rnd = Rand();
+							if(rnd<Sp[0].ReplacementRate)
+								C(x,y).Specie=i;	
+						}
+#else
 							C(x,y).Specie=i;	
+#endif
 						break;
 					}
 			}
@@ -416,9 +442,20 @@ void IPSNeutral::EvalCellZeroHierarchy(int x,int y)
 #elif defined UNIFORM_DISP
 				EuclideanDispersal(x,y,x1,y1);
 #endif
-				int dSp= C(x1,y1).Specie;
+				int & dSp= C(x1,y1).Specie;
+#ifdef  HIERARCHICAL_CONT
+				if( dSp > actSp )
+				{
+					rnd = Rand();
+					if(rnd<Sp[0].ReplacementRate)
+						dSp = actSp;
+				}
+				else if(dSp==0)  
+					dSp = actSp;
+#else
 				if( dSp>0 && dSp < actSp)
 					C(x,y).Specie = dSp;
+#endif
 			}		
 		}
 	}
@@ -443,8 +480,6 @@ void IPSNeutral::InitParms(const bool pomac)
 				Sp[i].ColonizationRate /= GlobalRate;
 		}
 		
-		for(i=1; i<=NumSpecies; i++ )
-				Sp[i].BirthRate = Sp[i].ColonizationRate*DimX*DimY;
 			
 		for(i=2; i<=NumSpecies; i++)     // Probabilidad acumulada 
 		{

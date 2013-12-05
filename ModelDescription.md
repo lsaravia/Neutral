@@ -59,23 +59,22 @@ It has the simulation's parameters and select the outputs the model will calcula
 
 ### File.sed
 
-sed: archivo de condiciones iniciales -> Posiciones espaciales, especie, edad, Habitat.
+File used for initial conditions or to save the state of the system
 
-DimX, DimY	: dimensiones del lattice
+The structure line by line is:
 
-La estructura es la siguiente 
-
-	DimX	DimY
-	SP
-	Matriz de numeros de DIMX x DIMY con la posicion de las especies
+1.	DimX	DimY
+2.	SP
+3.	A matrix with dimention DimX x DimY with the position of species. If 0 there is no species.
 
 
 ### File.set
 
-archivo de condiciones iniciales -> siembra al azar individuos de cierta especie y edad
-esta compuesto de lineas con la siguiente estructura
+File to seed a number of individuals with random positions in the landscape. Each line have the following structure:
 
-	especie edad cantidad [posicion x maxima] [habitat]
+	specie age quantity 
+
+Age is not used in this model.
 	
 
 ### FILE.**inp**
@@ -114,5 +113,13 @@ EXP_DISP defines an exponential distribution f(x) = dd*exp(-dd*x) with mean = 1/
 UNIFORM_DISP defines a uniform distribution between 0 and dd with mean =dd/2
 
 POWER_DISP defines an inverse power distribution f(x) = (dd-1)*pow(x,-dd) with mean = dd-1/(dd-2)
+
+## Hierarchical competition and neutral model
+
+The model can be compiled for simulating the transition between a competition Tilman's like model and a neutral model, modifing the parameter ReplacementRate. This parameter only works for hierarchical models: type 2 and 3. You have to define the following 
+
+HIERARCHICAL_CONT
+
+if not defined the model use a ReplacementRate=1 for Hierarchical models. 
   
 

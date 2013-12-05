@@ -4,7 +4,7 @@ nEvals 100
 rndSeed 1
 inter 10	
 init  1
-modType 2
+modType 4
 de S
 sa N
 idrPal idrs256.smp
@@ -16,4 +16,4 @@ deltaBox 20
 bioCalc S
 bioMax 400
 bioMin 0.1
-pomac 0
+pomac 1
