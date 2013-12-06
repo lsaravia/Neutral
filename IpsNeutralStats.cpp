@@ -87,8 +87,7 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, simplmat <double> &den,
 // Converting to Biomass with M=aN^(-4/3) between a range min & max
 // 
 // The Biomass spectrum is determined by the densities in the metacommunity
-// this is valid for strictly neutral models
-
+// 
 double IPSNeutral::ConvertToBio(simplmat <double> &data, float bioMax, float bioMin)
 {
 	double dar=-4.0/3.0;		 //  inverse of Damuth Power exponent
@@ -97,14 +96,19 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, float bioMax, float bio
 
 	if(privez)
 	{
+		// Use BirthRate to calculate the density in the metacommunity
 		for(int i=1; i<=NumSpecies; i++ )
 			Sp[i].BirthRate = Sp[i].ColonizationRate*DimX*DimY;
 
 		// set minimun value of Biomass to a density of the most abundant specie
 		// assumes the most abundant is the last specie
 		double maxN = Sp[NumSpecies].BirthRate;
+		for(int i=1; i<=NumSpecies; i++ )
+			if( Sp[i].BirthRate > maxN)  maxN=Sp[i].BirthRate;
+
 		// Calculate the constant 
 		a = maxN/(pow(bioMin,(1/dar)));
+
 		// BirthRate have the density in the metacommunity I replace it with biomass
 		for(int i=1; i<=NumSpecies; i++ )
 		{
@@ -135,6 +139,7 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, float bioMax, float bio
 			{
 				data(dx,dy) = Sp[spc].BirthRate;
 				totBio += Sp[spc].BirthRate;
+				// Agregar distribución lognormal ************************
 			}
 		}
 	return totBio;

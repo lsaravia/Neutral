@@ -79,8 +79,8 @@ Age is not used in this model.
 
 ### FILE.**inp**
 
-Parametros del modelo y frecuencia de especies en la comunidad
-Con la siguiente estructura de lineas
+Model parameters and frequency of species in the metacommunity.
+With the following structure:
 
 	DimX	DimY
 	numSpecies
@@ -120,6 +120,6 @@ The model can be compiled for simulating the transition between a competition Ti
 
 HIERARCHICAL_CONT
 
-if not defined the model use a ReplacementRate=1 for Hierarchical models. 
+if not defined the model use a ReplacementRate=1 for Hierarchical models and is faster because uses less random numbers. 
   
 

@@ -563,7 +563,12 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 	{
 		ostringstream nam1;
 		nam1 << fname << "mfBio.txt" << ends;
-		bioVol = ConvertToBio(dat, den, p.bioMax,p.bioMin);
+
+		// Convert to biomass using metacommunity densities
+		//
+		bioVol = ConvertToBio(dat, p.bioMax,p.bioMin);
+		// Convert biomass using actual densities
+		// bioVol = ConvertToBio(dat, den, p.bioMax,p.bioMin);
 		// Print the biomass spectrum
 		PrintDenBio(den, p.bioMax,p.bioMin,fname,nam2.str().c_str());   
 
@@ -616,6 +621,8 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 	return tot;
 	};
 
+/*
+// Print the biomass values of 1 individual of each species
 double IPSNeutral::PrintDenBio(simplmat <double> &den, float bioMax,float bioMin, const char * fname, const char * ident)
 {
 	static bool privez=false;
@@ -658,12 +665,6 @@ double IPSNeutral::PrintDenBio(simplmat <double> &den, float bioMax,float bioMin
 	}
 	dout << ident;  // Parameters and time
 
-/*
-	for(int i=1; i<=NumSpecies; i++ )
-	{	
-		dout << "\t" << Sp[i].BirthRate;
-	}
-*/
 	double dar=-4.0/3.0;		 //  inverse of Damuth Power exponent
 	double a=0.0,totBio=0.0;  
 
@@ -682,6 +683,61 @@ double IPSNeutral::PrintDenBio(simplmat <double> &den, float bioMax,float bioMin
 	    dout << "\t" << bio;
 		totBio += bio*den(i);
 	}
+	dout << "\t" << totBio << endl;
+	return(totBio);
+}
+*/
+
+double IPSNeutral::PrintDenBio(simplmat <double> &den,float bioMax,float bioMin, const char * fname, const char * ident)
+{
+	static bool privez=false;
+	ofstream dout;
+
+	if( fname!=NULL )
+	{
+		ostringstream name;
+		name << fname << "DenBio.txt" << ends;
+		dout.open( name.str().c_str(), ios::in );
+		if( !dout )
+			privez=true;
+
+		dout.close();
+        dout.clear();
+		dout.open( name.str().c_str(), ios::app );
+		if( !dout )
+		{
+			cerr << "Cannot open density file.\n";
+			return 0;
+		}
+	}
+	else
+	{
+		cerr << "File name cannot be NULL\n";
+		return 0;		
+	}
+
+	if( privez )
+	{
+		privez=false;
+		dout << ident <<"\tTime";
+		for( int i=0; i<NumSpecies; i++)
+			{
+			//dout.width(6);
+			dout <<  "\t" << (i+1);
+			}
+		dout << "\tTot.Bio" << endl;
+	}
+	dout << ident;  // Parameters and time
+
+	double totBio=0.0;  
+	for(int i=1; i<=NumSpecies; i++ )
+	{	
+		dout << "\t" << Sp[i].BirthRate;
+		totBio += Sp[i].BirthRate*den(i-1);
+		// Luego habria que sumar la biomasa de cada especie recorriendo toda la grilla
+		// porque siendo valores a partir de la lognormal no lo puedo estimar
+	}
+
 	dout << "\t" << totBio << endl;
 	return(totBio);
 }
