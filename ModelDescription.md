@@ -1,5 +1,10 @@
 # Model description
 
+## Biomass calculation
+
+I assume that the metacomunity follows a power law for density-size relationship N = aM^b [1]. I calculate the parameters *a* and *b* fixing the max and minimun biomass/bioVolume and assigning them to the most rare species and the most abundant one. Thus the value obtained represents te average biomass and to calculate the biomass value of each individual I use it as the median value of a lognormal distribution [2].
+
+
 ## Command Line arguments 
 
 ipsNeutral file.par file.inp file.sed/file.set
@@ -51,7 +56,7 @@ It has the simulation's parameters and select the outputs the model will calcula
 		
 8.	*pomac*		: (S/N) Takes parameters line by line from a file named pomac.lin and does a special output coded in the function IPSNeutral::PrintPomac.
 
-9.	*bioCalc*	: Calculates biomass based in an inverse Damuth rule, M=aN^(-4/3)  between a range of biomasses. The biomass is added to any other outputs requested.
+9.	*bioCalc*	: Calculates biomass based in an inverse Damuth rule, M=aN^b  between a range of biomasses. The biomass is added to any other outputs requested.
 
 10. *bioMax*	: Maximun biomass
 
@@ -123,3 +128,8 @@ HIERARCHICAL_CONT
 if not defined the model use a ReplacementRate=1 for Hierarchical models and is faster because uses less random numbers. 
   
 
+## References
+
+1. White EP, Ernest SKM, Kerkhoff AJ, Enquist BJ (2007) Relationships between body size and abundance in ecology. Trends Ecol Evol 22: 323–330. doi:10.1016/j.tree.2007.03.007.
+
+1. Giometto A, Altermatt F, Carrara F, Maritan A, Rinaldo A (2013) Scaling body size fluctuations. Proc Natl Acad Sci: 201301552. doi:10.1073/pnas.1301552110.

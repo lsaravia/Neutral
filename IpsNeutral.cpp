@@ -28,6 +28,9 @@ void IPSNeutral::Init( unsigned numSp, int dimX, int dimY, int rr )
 	CABase::Init(numSp, dimX, dimY,rr);
 
 	ran.init(rr);
+	if(rr>0)
+		normran.init(0,1,rr+1);
+	
 
 	C.resize(dimX,dimY);
 
@@ -36,8 +39,7 @@ void IPSNeutral::Init( unsigned numSp, int dimX, int dimY, int rr )
     NumEvaluations = 0;
     PrimeraEval = true;
     
-	// Usa los parametros desde 1 en adelante
-	// The first species have the rates for the neutral models, 
+	// The first specie have the rates for the neutral models, 
 	// after this only colonizationRate is taken as the metacommunity proportion.
 	Sp	= new SpecieNeutral[NumSpecies+1];
 
@@ -480,6 +482,11 @@ void IPSNeutral::InitParms(const bool pomac)
 				Sp[i].ColonizationRate /= GlobalRate;
 		}
 		
+		// Use the empty variable BirthRate to calculate the density in the metacommunity
+		// for the biomass calculation IPSNeutral::ConvertToBio
+		for(int i=1; i<=NumSpecies; i++ )
+			Sp[i].BirthRate = Sp[i].ColonizationRate*DimX*DimY;
+
 			
 		for(i=2; i<=NumSpecies; i++)     // Probabilidad acumulada 
 		{

@@ -566,7 +566,7 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 
 		// Convert to biomass using metacommunity densities
 		//
-		bioVol = ConvertToBio(dat, p.bioMax,p.bioMin);
+		bioVol = ConvertToBio(dat,den, p.bioMax,p.bioMin);
 		// Convert biomass using actual densities
 		// bioVol = ConvertToBio(dat, den, p.bioMax,p.bioMin);
 		// Print the biomass spectrum

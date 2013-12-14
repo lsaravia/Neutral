@@ -89,6 +89,7 @@ class IPSNeutral : public CABase
         bool PrimeraEval; 			// primera evaluacion de una corrida
 //        Ranfib ran;
         Ranf1 ran;
+        Normaldev normran;
 	public:
 
 	IPSNeutral( unsigned numSp, int dimX, int dimY, int rr=0 ) : CABase(numSp,dimX,dimY,rr) {Init(numSp,dimX,dimY,rr);};

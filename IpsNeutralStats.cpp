@@ -54,9 +54,20 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, simplmat <double> &den,
 	// Calculate the constant 
 	a = maxN/(pow(bioMin,(1/dar)));
 
+	for(int i=1; i<=NumSpecies; i++ )
+	{
+		double bio  = pow(den(i-1)/a,dar);
+	    if(bio>bioMax) 
+	    	bio=bioMax;
+	    else if(bio<bioMin) 
+	    	bio=bioMin;
+		Sp[i].BirthRate = bio;
+	}
+
   	int dx,dy;
  	dx = data.getRows();
  	dy = data.getCols();
+
 
 	if( dx!=DimX || dy!=DimY )
 		data.resize(DimX, DimY, 0.0);
@@ -68,12 +79,14 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, simplmat <double> &den,
 			int spc = C(dx,dy).Specie;
  			if( spc>0 )
  			{
-			    double bio  = pow(den(spc-1)/a,dar);
-			    if(bio>bioMax) 
-			    	bio=bioMax;
+			    double mu = log(Sp[spc].BirthRate);
+				double sigma = sqrt(abs(mu)*2);
+				double bio = exp(mu+sigma*normran.dev());
+				if(bio>bioMax) 
+	    			bio=bioMax;
 			    else if(bio<bioMin) 
-			    	bio=bioMin;
-
+	    			bio=bioMin;
+				
 				data(dx,dy) = bio;
 				totBio += bio;
  			}
@@ -84,7 +97,7 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, simplmat <double> &den,
 
 
 
-// Converting to Biomass with M=aN^(-4/3) between a range min & max
+// Converting to Biomass with N=aM^b between a range minBio & maxBio
 // 
 // The Biomass spectrum is determined by the densities in the metacommunity
 // 
@@ -96,24 +109,28 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, float bioMax, float bio
 
 	if(privez)
 	{
-		// Use BirthRate to calculate the density in the metacommunity
-		for(int i=1; i<=NumSpecies; i++ )
-			Sp[i].BirthRate = Sp[i].ColonizationRate*DimX*DimY;
 
 		// set minimun value of Biomass to a density of the most abundant specie
 		// assumes the most abundant is the last specie
 		double maxN = Sp[NumSpecies].BirthRate;
+		double minN = Sp[1].BirthRate;
 		for(int i=1; i<=NumSpecies; i++ )
+		{
 			if( Sp[i].BirthRate > maxN)  maxN=Sp[i].BirthRate;
+			if( Sp[i].BirthRate < minN)  minN=Sp[i].BirthRate;
+		}
+
+		// Calculate the exponent 
+		dar = log(minN/maxN)/log(bioMax/bioMin);
 
 		// Calculate the constant 
-		a = maxN/(pow(bioMin,(1/dar)));
+		a = maxN/(pow(bioMin,dar));
 
-		// BirthRate have the density in the metacommunity I replace it with biomass
+		// BirthRate have the density in the metacommunity I replace it with mean biomass
 		for(int i=1; i<=NumSpecies; i++ )
 		{
 			//double denMeta = Sp[i].BirthRate;
-			double bio  = pow(Sp[i].BirthRate/a,dar);
+			double bio  = pow(Sp[i].BirthRate/a,1/dar);
 		    if(bio>bioMax) 
 		    	bio=bioMax;
 		    else if(bio<bioMin) 
@@ -137,9 +154,11 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, float bioMax, float bio
 			int spc = C(dx,dy).Specie;
 			if( spc>0 )
 			{
-				data(dx,dy) = Sp[spc].BirthRate;
-				totBio += Sp[spc].BirthRate;
-				// Agregar distribución lognormal ************************
+				double mu = log(Sp[spc].BirthRate);
+				double sigma = sqrt(abs(mu)*2);
+				double bio = exp(mu+sigma*normran.dev());
+				data(dx,dy) = bio;
+				totBio += bio;
 			}
 		}
 	return totBio;
