@@ -100,24 +100,11 @@ int main(int argc, char * argv[])
 								break;
 						if( p.sa=='S' )
 						{
-					
 							ostringstream name;
 							name << p.baseName << "-" << setfill('0') << setw(4) << (i+1) << ".sed" << ends;
 							ca.SaveSeed( name.str().c_str() );
-							if( p.bioCalc=='S')
-							{
-								ostringstream nam1;
-								nam1 << p.baseName << "Bio" << setfill('0') << setw(4) << (i+1) << ".sed" << ends;
-								simplmat <double> dat;
-								RWFile file;
-								ca.Convert(dat);
-								if(ca.ConvertToBio(dat, p.bioMax,p.bioMin))
-									file.WriteSeed(nam1.str().c_str(),dat);
-
-								// Agregar salida de biomasa si corresponde
-							}
 						}
-						
+		
 						if( p.mfDim=='S')
 						{
 							simplmat <double> dat;
@@ -128,20 +115,12 @@ int main(int argc, char * argv[])
 
 							ostringstream name,nam1;
 							name << p.baseName << "mfOrd.txt" << ends;
-							nam1 << argv[2] << "-" << (i+1) << ends;
+							nam1 << argv[2] << "\t" << (i+1) << ends;
 
 							ca.Convert(dat);
 							if(ca.Reordering(dat))
 								ca.MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,name.str().c_str(),nam1.str().c_str());
-
-							if(p.bioCalc=='S')
-							{
-								ostringstream nam2;
-								nam2 << p.baseName << "mfBio.txt" << ends;							
-								ca.Convert(dat);
-								if(ca.ConvertToBio(dat, p.bioMax,p.bioMin))
-									ca.MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam2.str().c_str(),nam1.str().c_str());
-							}
+							
 						}
 					}
 				}

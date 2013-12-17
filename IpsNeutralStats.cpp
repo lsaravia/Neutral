@@ -39,21 +39,30 @@ int IPSNeutral::Convert(simplmat <double> &data)
 }
 
 
-// Converting to Biomass with M=aN^(-4/3) between a range min & max
+// Converting to Biomass with using the inverse of Damuth exponent
+//                M=(N/a)^(-4/3) between a range bioMin & bioMax
 // 
 // The Biomass spectrum is calculated dynamically according to the actual densities 
 // Assuming the minimun biomass to a species with a frequency = 0.9 (very dominant)
+//
+// The species follow a universal size-distribution according to Giometto (2013) with
+// lognormal distribution.
 //
 double IPSNeutral::ConvertToBio(simplmat <double> &data, simplmat <double> &den,float bioMax,float bioMin)
 {
 	double dar=-4.0/3.0;		 // inverse of Damuth Power exponent
 	double a=0,totBio=0;  
 
+	double sigma = 0.2223; 			// From giometto 2013
+	double mu = -(sigma*sigma)/2;
+
+
 	// set minimun value bioMin to a density of 90% of the total
 	double maxN = DimX*DimY*0.9;
 	// Calculate the constant 
 	a = maxN/(pow(bioMin,(1/dar)));
 
+	// Calculate the average biomass of each species and store it in BirthRate
 	for(int i=1; i<=NumSpecies; i++ )
 	{
 		double bio  = pow(den(i-1)/a,dar);
@@ -79,14 +88,7 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, simplmat <double> &den,
 			int spc = C(dx,dy).Specie;
  			if( spc>0 )
  			{
-			    double mu = log(Sp[spc].BirthRate);
-				double sigma = sqrt(abs(mu)*2);
-				double bio = exp(mu+sigma*normran.dev());
-				if(bio>bioMax) 
-	    			bio=bioMax;
-			    else if(bio<bioMin) 
-	    			bio=bioMin;
-				
+				double bio = exp(mu+sigma*normran.dev())*Sp[spc].BirthRate;
 				data(dx,dy) = bio;
 				totBio += bio;
  			}
@@ -100,11 +102,16 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, simplmat <double> &den,
 // Converting to Biomass with N=aM^b between a range minBio & maxBio
 // 
 // The Biomass spectrum is determined by the densities in the metacommunity
-// 
+// The power exponent is calculated assuming that the most frequent species has 
+// the minimun biomass and the least frequent has the maximun 
+//
 double IPSNeutral::ConvertToBio(simplmat <double> &data, float bioMax, float bioMin)
 {
 	double dar=-4.0/3.0;		 //  inverse of Damuth Power exponent
 	double a=0,totBio=0; 
+	double sigma = 0.2223; 			// From Giometto 2013 PNAS
+	double mu = -(sigma*sigma)/2;
+
 	static bool privez=true;
 
 	if(privez)
@@ -154,9 +161,8 @@ double IPSNeutral::ConvertToBio(simplmat <double> &data, float bioMax, float bio
 			int spc = C(dx,dy).Specie;
 			if( spc>0 )
 			{
-				double mu = log(Sp[spc].BirthRate);
-				double sigma = sqrt(abs(mu)*2);
-				double bio = exp(mu+sigma*normran.dev());
+				double bio = exp(mu+sigma*normran.dev())*Sp[spc].BirthRate;
+	
 				data(dx,dy) = bio;
 				totBio += bio;
 			}

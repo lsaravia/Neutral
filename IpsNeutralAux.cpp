@@ -315,13 +315,14 @@ void IPSNeutral::RandomSetSeed(int sp,unsigned age, int no, int minX)
 		}
 	}
 
-// DENTRO DE ESTA FUNCION CALCULA BIOMASA Y GUARDA y CALCULA ESPECTRO
+// Calculates density and S (richness) H (Shannon) and if required calculates Biomass 
+// 
 //
 int  IPSNeutral::PrintDensity(IPSParms p,const char *fname,const char *iname)
 {
 	ofstream dout;
 	static int privez=0;
-	double tot=0,totBio=0,totCells=DimX*DimY,diversity=0,freq=0,bioVol=0;
+	double tot=0,totFreq=0,totCells=DimX*DimY,diversity=0,freq=0,bioVol=0;
 	simplmat <double> den(NumSpecies);
 	//simplmat <int> calcDiv(NumSpecies);
 	//double * den = new double[NumSpecies];
@@ -382,7 +383,7 @@ int  IPSNeutral::PrintDensity(IPSParms p,const char *fname,const char *iname)
 		freq = den(i)/totCells;
 		dout << "\t" << freq;
 		tot+= den(i);
-		totBio+= freq;
+		totFreq+= freq;
 		if(freq>0.0) 
 		{
 			diversity += freq * log(freq);
@@ -404,7 +405,7 @@ int  IPSNeutral::PrintDensity(IPSParms p,const char *fname,const char *iname)
 		}
 	}
 	
-	dout << "\t" << totBio <<  "\t" << tot << "\t" << richness << "\t" << -1*diversity;
+	dout << "\t" << totFreq <<  "\t" << tot << "\t" << richness << "\t" << -1*diversity;
 	
 	// Calculates H diversity and richness for species with proportion > 0.001
 	//
@@ -425,11 +426,34 @@ int  IPSNeutral::PrintDensity(IPSParms p,const char *fname,const char *iname)
 
 	if(p.bioCalc=='S')
 	{
+		// Print the biomass spectrum
 		ostringstream nam2;
 		nam2 << iname << "\t" << T << ends;
+		PrintDenBio(den, p.bioMax,p.bioMin,fname,nam2.str().c_str());   
+		// Convert to biomass using the actual densities
+		simplmat <double> dat;
+		bioVol = ConvertToBio(dat, den,p.bioMax,p.bioMin);
 
-		// Print the biomass spectrum
-		bioVol = PrintDenBio(den, p.bioMax,p.bioMin,fname,nam2.str().c_str());   
+		if( p.sa=='S')
+		{
+			ostringstream nam1;
+			nam1 << p.baseName << "Bio" << setfill('0') << setw(4) << (i+1) << ".sed" << ends;
+			RWFile file;
+			file.WriteSeed(nam1.str().c_str(),dat);
+		}
+		if(p.mfDim=='S')
+		{
+			// Read q file for Multifractal spectrum
+			//
+			simplmat <double> dat;
+			simplmat <double> q;
+			RWFile file;
+			if(!file.ReadSeed("q.sed", q))
+				exit(1);
+			ostringstream nam1;
+			nam1 << fname << "mfBio.txt" << ends;
+			MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam1.str().c_str(),nam2.str().c_str());
+		}
 	}
 	dout << "\t" << bioVol << "\t" << bioVol/tot << endl;
 
@@ -564,11 +588,10 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 		ostringstream nam1;
 		nam1 << fname << "mfBio.txt" << ends;
 
-		// Convert to biomass using metacommunity densities
+		// Convert to biomass using actual densities
 		//
 		bioVol = ConvertToBio(dat,den, p.bioMax,p.bioMin);
-		// Convert biomass using actual densities
-		// bioVol = ConvertToBio(dat, den, p.bioMax,p.bioMin);
+
 		// Print the biomass spectrum
 		PrintDenBio(den, p.bioMax,p.bioMin,fname,nam2.str().c_str());   
 
@@ -578,7 +601,7 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 
 	dout.close();
 	
-	// Calculates Dq reordering species from the most abundant with 1 
+	// Calculates Dq reordering species from the most abundant as 1 
 	//
 	ostringstream nam3;
 	nam3 << fname << "mfOrd.txt" << ends;
@@ -725,7 +748,7 @@ double IPSNeutral::PrintDenBio(simplmat <double> &den,float bioMax,float bioMin,
 			//dout.width(6);
 			dout <<  "\t" << (i+1);
 			}
-		dout << "\tTot.Bio" << endl;
+		dout << "\tAvg.Tot.Bio" << endl;
 	}
 	dout << ident;  // Parameters and time
 
