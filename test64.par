@@ -6,7 +6,7 @@ inter 10
 init  1
 modType 4
 de S
-sa N
+sa S
 idrPal idrs256.smp
 baseName t64
 mfDim S
@@ -16,4 +16,4 @@ deltaBox 20
 bioCalc S
 bioMax 200
 bioMin 0.2
-pomac 1
+pomac 0

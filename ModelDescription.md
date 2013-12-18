@@ -2,7 +2,7 @@
 
 ## Biomass calculation
 
-I assume that the metacomunity follows a power law for density-size relationship N = aM^b [1]. I calculate the parameters *a* and *b* fixing the max and minimun biomass/bioVolume and assigning them to the most rare species and the most abundant one. Thus the value obtained represents te average biomass and to calculate the biomass value of each individual I use it as the median value of a lognormal distribution [2].
+I assume that the community follows Damuth power law for density-size relationship N = aM^b [1] with b=-3/4. Each time step I calculate the average biomass using the actual densities with the inverse function M=(N/a)^(-4/3). The second assumption is that species-size distribution follows a universal function, thus I calculated the biomass for each individual using a lognormal distribution with the previously calculated average [2].
 
 
 ## Command Line arguments 
@@ -70,7 +70,7 @@ The structure line by line is:
 
 1.	DimX	DimY
 2.	SP
-3.	A matrix with dimention DimX x DimY with the position of species. If 0 there is no species.
+3.	A matrix with dimension DimX x DimY with the position of species. If 0 there is no species.
 
 
 ### File.set
@@ -111,7 +111,7 @@ The structure of the lines MetacommunityFrequency is:
 	
 ## Dispersal functions
 
-There are 3 diferent kinds of dispersal functions set at compile time using a macro definition in the makefile, for the following formulas: dd = DispersalDistance
+There are 3 different kinds of dispersal functions set at compile time using pre-processor macro definitions in the makefile, for the following formulas: dd = DispersalDistance
 
 EXP_DISP defines an exponential distribution f(x) = dd*exp(-dd*x) with mean = 1/dd
 
@@ -121,15 +121,17 @@ POWER_DISP defines an inverse power distribution f(x) = (dd-1)*pow(x,-dd) with m
 
 ## Hierarchical competition and neutral model
 
-The model can be compiled for simulating the transition between a competition Tilman's like model and a neutral model, modifing the parameter ReplacementRate. This parameter only works for hierarchical models: type 2 and 3. You have to define the following 
+The model can be compiled for simulating the transition between a competition Tilman's like model [3] and a neutral model [4], modifying the parameter ReplacementRate. This parameter only works for hierarchical models: type 2 and 3. You have to define the following 
 
-HIERARCHICAL_CONT
-
-if not defined the model use a ReplacementRate=1 for Hierarchical models and is faster because uses less random numbers. 
+The pre-processor variable HIERARCHICAL_CONT if defined permits the use of ReplacementRate, if not defined the model assign ReplacementRate=1 for Hierarchical models, this slightly faster because uses less random numbers. 
   
 
 ## References
 
 1. White EP, Ernest SKM, Kerkhoff AJ, Enquist BJ (2007) Relationships between body size and abundance in ecology. Trends Ecol Evol 22: 323–330. doi:10.1016/j.tree.2007.03.007.
 
-1. Giometto A, Altermatt F, Carrara F, Maritan A, Rinaldo A (2013) Scaling body size fluctuations. Proc Natl Acad Sci: 201301552. doi:10.1073/pnas.1301552110.
+2. Giometto A, Altermatt F, Carrara F, Maritan A, Rinaldo A (2013) Scaling body size fluctuations. Proc Natl Acad Sci: 201301552. doi:10.1073/pnas.1301552110.
+
+3. Tilman D (1994) Competition and biodiversity in spatially structured habitats. Ecology 75: 2–16.
+
+4. Hubbell SP (2001) The unified neutral theory of biodiversity and biogeography. Princeton University Press. 

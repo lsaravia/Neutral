@@ -429,10 +429,15 @@ int  IPSNeutral::PrintDensity(IPSParms p,const char *fname,const char *iname)
 		// Print the biomass spectrum
 		ostringstream nam2;
 		nam2 << iname << "\t" << T << ends;
-		PrintDenBio(den, p.bioMax,p.bioMin,fname,nam2.str().c_str());   
-		// Convert to biomass using the actual densities
 		simplmat <double> dat;
-		bioVol = ConvertToBio(dat, den,p.bioMax,p.bioMin);
+		// Convert to biomass using the actual densities
+		// bioVol = ConvertToBio(dat, den,p.bioMax,p.bioMin);
+		//
+
+		// Convert to biomass using the metacommunity density
+		//
+		bioVol = ConvertToBio(dat, p.bioMax,p.bioMin);
+		PrintDenBio(den, p.bioMax,p.bioMin,fname,nam2.str().c_str());   
 
 		if( p.sa=='S')
 		{
@@ -590,7 +595,11 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 
 		// Convert to biomass using actual densities
 		//
-		bioVol = ConvertToBio(dat,den, p.bioMax,p.bioMin);
+		// bioVol = ConvertToBio(dat,den, p.bioMax,p.bioMin);
+
+		// Convert to biomass using the metacommunity density
+		//
+		bioVol = ConvertToBio(dat, p.bioMax,p.bioMin);
 
 		// Print the biomass spectrum
 		PrintDenBio(den, p.bioMax,p.bioMin,fname,nam2.str().c_str());   
@@ -742,7 +751,7 @@ double IPSNeutral::PrintDenBio(simplmat <double> &den,float bioMax,float bioMin,
 	if( privez )
 	{
 		privez=false;
-		dout << ident <<"\tTime";
+		dout << ident <<"BirthRate\tMortalityRate\tDispersalDistance\tColonizationRate\tReplacementRate\tTime";
 		for( int i=0; i<NumSpecies; i++)
 			{
 			//dout.width(6);

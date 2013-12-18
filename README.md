@@ -1,6 +1,5 @@
 
-Multiespecific neutral/hierachical stochastic model
-===================================================
+# Multiespecific neutral/hierachical stochastic spatial model
 
 This is C++ code for neutral/hierarchical competition models. In these all species have the same parameters except the probability of colonization from metacommunity. 
 
@@ -10,7 +9,7 @@ There are actually 5 similar models built in
 2. Saturated Neutral 
 3. Non-saturated Hierarchical (Tilman 1994)
 4. Saturated Hierarchical 
-5. Continuum model between 2 and 4 (or 1 and 3) (compiled with makefileCont.mak)
+5. Continuum model between 2 and 4 (or 1 and 3)
 
 And three dispersal kernels
 
@@ -18,9 +17,15 @@ And three dispersal kernels
 2. Exponential
 3. Inverse power 
 
-I am using GCC to compile it. For a crude and slow graphical output you will need the X11 SDL development libraries and the GRX graphics library http://grx.gnu.de/grx246um.htm
+I am using the Gnu C++ (g++ v4.6.3) to compile it. For a crude and slow graphical output you will need the X11 SDL development libraries and the GRX graphics library http://grx.gnu.de/grx246um.htm
 
-You also need the code from https://github.com/lsaravia/mfsba if you want the multifractal spectra output otherwise you have to comment those lines.
+You also need the code from https://github.com/lsaravia/mfsba if you want the multifractal spectra output otherwise you have to comment the calls to the function *MultifractalSBA* and the includes to *mf.h* header.
+
+### To Do
+
+* Verify that the parameter rates/probabilities used in the algorithm are consistent with mean field equations
+
+* Create a simulation parameter for the threshold of undetected species now fixed at 0.001
 
 ## Bibliography
 
@@ -28,8 +33,7 @@ Tilman, D., 1994. Competition and biodiversity in spatially structured habitats.
 
 Etienne, R.S., Alonso, D. & McKane, A.J., 2007. The zero-sum assumption in neutral biodiversity theory. Journal of Theoretical Biology, 248(3), pp.522-536.
 
-License
-=======
+## License
 
 	Copyright 2011 Leonardo A. Saravia
  
