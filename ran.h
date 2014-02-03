@@ -1,4 +1,5 @@
 #include <cmath>
+// Randon generator based on numerical recipes
 
 static float sqrarg;
 #define SQR(a) ((sqrarg=(a)) == 0.0 ? 0.0 : sqrarg*sqrarg)
@@ -35,7 +36,6 @@ struct Ranf1 {
 
 struct Ranfib {
 	// Knuth’s subtractive generator using only floating operations. 
-	// and an integer fast generator with period 1.8 10^19 .
 	double dtab[55], dd;
 	int inext, inextp;
 	Ullint v;
@@ -69,7 +69,6 @@ struct Ranfib {
 
 struct Normaldev : Ranf1 {
 
-	// Structure for normal deviates.
 	double mu,sig;
 	Normaldev(double mmu=0, double ssig=1, Ullint i=0)
 	: Ranf1(i), mu(mmu), sig(ssig){}

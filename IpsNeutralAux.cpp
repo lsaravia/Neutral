@@ -424,7 +424,7 @@ int  IPSNeutral::PrintDensity(IPSParms p,const char *fname,const char *iname)
 			
 	dout << "\t" << richness << "\t" << -1*diversity;
 
-	if(p.bioCalc=='S')
+	if(p.bioCalc=='S' && T>0)
 	{
 		// Print the biomass spectrum
 		ostringstream nam2;
@@ -442,7 +442,7 @@ int  IPSNeutral::PrintDensity(IPSParms p,const char *fname,const char *iname)
 		if( p.sa=='S')
 		{
 			ostringstream nam1;
-			nam1 << p.baseName << "Bio" << setfill('0') << setw(4) << (i+1) << ".sed" << ends;
+			nam1 << p.baseName << "Bio" << setfill('0') << setw(4) << T << ".sed" << ends;
 			RWFile file;
 			file.WriteSeed(nam1.str().c_str(),dat);
 		}
@@ -450,7 +450,6 @@ int  IPSNeutral::PrintDensity(IPSParms p,const char *fname,const char *iname)
 		{
 			// Read q file for Multifractal spectrum
 			//
-			simplmat <double> dat;
 			simplmat <double> q;
 			RWFile file;
 			if(!file.ReadSeed("q.sed", q))
@@ -653,72 +652,6 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 	return tot;
 	};
 
-/*
-// Print the biomass values of 1 individual of each species
-double IPSNeutral::PrintDenBio(simplmat <double> &den, float bioMax,float bioMin, const char * fname, const char * ident)
-{
-	static bool privez=false;
-	ofstream dout;
-
-	if( fname!=NULL )
-	{
-		ostringstream name;
-		name << fname << "DenBio.txt" << ends;
-		dout.open( name.str().c_str(), ios::in );
-		if( !dout )
-			privez=true;
-
-		dout.close();
-        dout.clear();
-		dout.open( name.str().c_str(), ios::app );
-		if( !dout )
-		{
-			cerr << "Cannot open density file.\n";
-			return 0;
-		}
-	}
-	else
-	{
-		cerr << "File name cannot be NULL\n";
-		return 0;		
-	}
-
-	if( privez )
-	{
-		privez=false;
-		dout << ident <<"\tTime";
-		for( int i=0; i<NumSpecies; i++)
-			{
-			//dout.width(6);
-			dout <<  "\t" << (i+1);
-			}
-		//dout << "\tTot.Dens\tTot.Num\tRichness\tH\tRich>0.001\tH>0.001" << endl;
-		dout << "\tTot.Bio" << endl;
-	}
-	dout << ident;  // Parameters and time
-
-	double dar=-4.0/3.0;		 //  inverse of Damuth Power exponent
-	double a=0.0,totBio=0.0;  
-
-	// set minimun value bioMin to a density of 90% of the total
-	double maxN = DimX*DimY*0.9;
-	// Calculate the constant 
-	a = maxN/(pow(bioMin,(1/dar)));
-	for(int i=0; i<NumSpecies; i++ )
-	{	
-		double bio  = pow(den(i)/a,dar);
-	    if(bio>bioMax) 
-	    	bio=bioMax;
-	    else if(bio<bioMin) 
-	    	bio=bioMin;
-
-	    dout << "\t" << bio;
-		totBio += bio*den(i);
-	}
-	dout << "\t" << totBio << endl;
-	return(totBio);
-}
-*/
 
 double IPSNeutral::PrintDenBio(simplmat <double> &den,float bioMax,float bioMin, const char * fname, const char * ident)
 {

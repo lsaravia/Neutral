@@ -115,7 +115,7 @@ int main(int argc, char * argv[])
 
 							ostringstream name,nam1;
 							name << p.baseName << "mfOrd.txt" << ends;
-							nam1 << argv[2] << "\t" << (i+1) << ends;
+							nam1 << pvals.c_str() << "\t" << (i+1) << ends;
 
 							ca.Convert(dat);
 							if(ca.Reordering(dat))

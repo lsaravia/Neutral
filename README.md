@@ -1,7 +1,7 @@
 
 # Multiespecific neutral/hierachical stochastic spatial model
 
-This is C++ code for neutral/hierarchical competition models. In these all species have the same parameters except the probability of colonization from metacommunity. 
+This is C++ code for neutral/hierarchical competition models. In these all species have the same parameters except the probability of colonization from metacommunity. More details are given in the file ModelDescription.md
 
 There are actually 5 similar models built in
 
