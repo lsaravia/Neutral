@@ -223,7 +223,7 @@ int IPSNeutral::SaveSeed(const char * fname)
 		{
 		for(j=0;j<DimX;j++)
 			{
-			sav<< setw(3) << int(C(j,i).Elem());
+			sav<< int(C(j,i).Elem()) << "\t";
 			}
 		sav << endl;
 		}
