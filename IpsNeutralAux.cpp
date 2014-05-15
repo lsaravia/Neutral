@@ -507,6 +507,13 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 	{
 		privez=0;
 		dout << iname <<"\tTime";
+		
+		// Print all species densities
+		//
+		for( int a=0; a<NumSpecies; a++)
+			{
+			dout <<  "\t" << (a+1);
+			}
 		dout << "\tTot.Dens\tTot.Num\tRichness\tH\tRich>0.001\tH>0.001\tBiomass\tAvg.Bio" << endl;
 		}
 
@@ -527,6 +534,8 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 	for( i=0; i<NumSpecies; i++)
 	{
 		freq = den(i)/totCells;
+		// Print all species densities
+		dout << "\t" << freq;
 		tot+= den(i);
 		totBio+= freq;
 		if(freq>0.0) 
