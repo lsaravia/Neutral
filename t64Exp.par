@@ -8,7 +8,7 @@ modType 4
 de S
 sa N
 idrPal idrs256.smp
-baseName t64
+baseName t64Exp1
 mfDim S
 minBox 4
 maxBox 512
