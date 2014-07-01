@@ -157,7 +157,7 @@ POWER_DISP defines an inverse power distribution f(x) = (dd-1)*pow(x,-dd) with m
 
 ## Hierarchical competition and neutral model
 
-The model can be compiled for simulating the transition between a competition Tilman's like model [3] and a neutral model [4], modifying the parameter *ReplacementRate*. This parameter only works for hierarchical models: type 2 and 3. 
+The model can be compiled for simulating the transition between a competition Tilman's like model [3] and a neutral model [4], modifying the parameter *ReplacementRate*. This parameter only works for hierarchical models: type 3 and 4. 
 The pre-processor variable HIERARCHICAL_CONT if defined permits the use of ReplacementRate, if not defined the model assign ReplacementRate=1 for Hierarchical models, this slightly faster because uses less random number calls. 
   
 
