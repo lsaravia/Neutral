@@ -327,9 +327,9 @@ int IPSNeutral::PStats(simplmat <double> &data, const char * outFile, const char
 }
 
 int IPSNeutral::MFStats(simplmat <double> &data, simplmat <double> &q,
-	int minBox, int maxBox, int deltaBox,const char * outFile,const char * ident)
+	int minBox, int maxBox, int deltaBox,const char * outFile,const char * ident, const char option)
 {
-	return 	MultifractalSBA(data, q,const_cast<char *>(outFile) ,minBox, maxBox, deltaBox, 'S',const_cast<char *>(ident));
+	return 	MultifractalSBA(data, q,const_cast<char *>(outFile) ,minBox, maxBox, deltaBox, option,const_cast<char *>(ident));
 }
 
 

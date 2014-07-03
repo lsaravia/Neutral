@@ -119,7 +119,7 @@ int main(int argc, char * argv[])
 
 							ca.Convert(dat);
 							if(ca.Reordering(dat))
-								ca.MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,name.str().c_str(),nam1.str().c_str());
+								ca.MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,name.str().c_str(),nam1.str().c_str(),p.mfDim);
 							
 						}
 					}

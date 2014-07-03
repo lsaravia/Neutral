@@ -1,4 +1,4 @@
 BirthRate	MortalityRate	DispersalDistance	ColonizationRate ReplacementRate
-1	.2 	2.2	0.01	0.0
-1	.2 	2.2	0.01	0.5
-1	.2 	2.2	0.01	1.0
+1	.2 	0.2	0.01	0.0
+1	.2 	0.2	0.01	0.5
+1	.2 	0.2	0.01	1.0

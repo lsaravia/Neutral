@@ -618,7 +618,7 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 
 	dout.close();
 	
-	// Calculates Dq reordering species from the most abundant as 1 
+	// Calculates Dq reordering species from the most abundant as 1 (SRS)
 	//
 	ostringstream nam3;
 	nam3 << fname << "mfOrd.txt" << ends;
@@ -626,7 +626,13 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 	if(Reordering(dat,den))
 		MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam3.str().c_str(),nam2.str().c_str());
 	
+	// Calculates Dq of SAD 
+	//
+	ostringstream nam4;
+	nam4 << fname << "mfSAD.txt" << ends;
 	
+	Convert(dat);
+	MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam4.str().c_str(),nam2.str().c_str(),'E');
 
 /*
 	// Calculates Dq with q.sed for the most abundant specie

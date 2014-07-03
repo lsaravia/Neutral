@@ -16,4 +16,4 @@ deltaBox 20
 bioCalc N
 bioMax 200
 bioMin 0.2
-pomac 0
+pomac 1

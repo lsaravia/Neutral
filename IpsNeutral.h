@@ -146,7 +146,7 @@ class IPSNeutral : public CABase
 
 	
 	int MFStats(simplmat <double> &data, simplmat <double> &q,
-						int minBox, int maxBox, int deltaBox,const char * outFile,const char * ident);
+						int minBox, int maxBox, int deltaBox,const char * outFile,const char * ident,const char option='S');
 						
 	//int PrintDenBio(const char * outFile, const char * ident);       // Print biomass of each species
 	double PrintDenBio(simplmat <double> &den, float bioMax,float bioMin, const char * fname, const char * ident);
