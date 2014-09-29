@@ -9,10 +9,13 @@
 #include <sstream>
 #include "IpsNeutral.h"
 #include <ctype.h>
-#include "grxkeys.h"
 #include <time.h>
 #include "bgi.hpp"
 #include "RWFile.h"
+
+#ifdef GRAPHICS
+#include "grxkeys.h"
+#endif
 
 #define uchar unsigned char
 
@@ -270,7 +273,7 @@ void IPSNeutral::PrintGraph()
     	//getchar();
         privez = false;
     }
-    
+#ifdef GRAPHICS    
 	if( GrKeyPressed() )
 		{
 		int sa=toupper(GrKeyRead());
@@ -289,7 +292,7 @@ void IPSNeutral::PrintGraph()
 			exit(1);
 			
 		}
- 
+#endif 
 	}
 
 void IPSNeutral::RandomSetSeed(int sp,unsigned age, int no, int minX)
