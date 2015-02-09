@@ -392,7 +392,7 @@ int  IPSNeutral::PrintDensity(IPSParms p,const char *fname,const char *iname)
 			diversity += freq * log(freq);
 			richness++;
 		}
-		if( freq > 0.001 ) 				// Mark > 0.001 
+		if( freq > p.minProp ) 				// Mark > 0.001 (minProp) to calculate H and Richness
 			calcDiv[i] = true;
 	}
 	// If not saturated correct Shannon Diversity
@@ -413,18 +413,20 @@ int  IPSNeutral::PrintDensity(IPSParms p,const char *fname,const char *iname)
 	// Calculates H diversity and richness for species with proportion > 0.001
 	//
 	totCells = diversity = richness = 0;
-	for( i=0; i<NumSpecies; i++)
-		if( calcDiv[i] )
-			totCells+=den(i);
-			
-	for( i=0; i<NumSpecies; i++)
-		if( calcDiv[i] )
-		{
-			freq = den(i)/totCells;
-			diversity += freq * log(freq);
-			richness++;
-		}
-			
+	if( p.minProp>0)
+	{
+		for( i=0; i<NumSpecies; i++)
+			if( calcDiv[i] )
+				totCells+=den(i);
+				
+		for( i=0; i<NumSpecies; i++)
+			if( calcDiv[i] )
+			{
+				freq = den(i)/totCells;
+				diversity += freq * log(freq);
+				richness++;
+			}
+	}		
 	dout << "\t" << richness << "\t" << -1*diversity;
 
 	if(p.bioCalc=='S' && T>0)
@@ -551,7 +553,7 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 				maxi = i;
 			}	
 		}
-		if( freq > 0.001 ) 				// Mark > 0.001 
+		if( freq > p.minProp ) 				// Mark > 0.001 
 			calcDiv[i] = true;
 	}
 	// If not saturated correct Shannon Diversity
@@ -572,70 +574,76 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 	// Calculates H diversity and richness for species with proportion > 0.001
 	//
 	totCells = diversity = richness = 0.0;
-	for( i=0; i<NumSpecies; i++)
-		if( calcDiv[i] )
-			totCells+=den(i);
-			
-	for( i=0; i<NumSpecies; i++)
-		if( calcDiv[i] )
-		{
-			freq = den(i)/totCells;
-			diversity += freq * log(freq);
-			richness++;
-		}
-			
+	if( p.minProp>0)
+	{
+		for( i=0; i<NumSpecies; i++)
+			if( calcDiv[i] )
+				totCells+=den(i);
+				
+		for( i=0; i<NumSpecies; i++)
+			if( calcDiv[i] )
+			{
+				freq = den(i)/totCells;
+				diversity += freq * log(freq);
+				richness++;
+			}
+	}
+
 	dout << "\t" << richness << "\t" << -1*diversity;
 
-	ostringstream nam2;
-	nam2 << iname << "\t" << T << ends;
-
-	// Read q file for Multifractal spectrum
-	//
-	simplmat <double> dat;
-	simplmat <double> q;
-	RWFile file;
-	if(!file.ReadSeed("q.sed", q))
-		exit(1);
-
-	// Calculates Dq converting to bioVolume =aN^(-4/3) 
-	//
-	if(p.bioCalc=='S')
+	if(p.mfDim=='S')
 	{
-		ostringstream nam1;
-		nam1 << fname << "mfBio.txt" << ends;
-
-		// Convert to biomass using actual densities
+		ostringstream nam2;
+		nam2 << iname << "\t" << T << ends;
+		// Read q file for Multifractal spectrum
 		//
-		// bioVol = ConvertToBio(dat,den, p.bioMax,p.bioMin);
+		simplmat <double> dat;
+		simplmat <double> q;
+		RWFile file;
+		if(!file.ReadSeed("q.sed", q))
+			exit(1);
 
-		// Convert to biomass using the metacommunity density
+		// Calculates Dq converting to bioVolume =aN^(-4/3) 
 		//
-		bioVol = ConvertToBio(dat, p.bioMax,p.bioMin);
+		if(p.bioCalc=='S')
+		{
+			ostringstream nam1;
+			nam1 << fname << "mfBio.txt" << ends;
 
-		// Print the biomass spectrum
-		PrintDenBio(den, p.bioMax,p.bioMin,fname,nam2.str().c_str());   
+			// Convert to biomass using actual densities
+			//
+			// bioVol = ConvertToBio(dat,den, p.bioMax,p.bioMin);
 
-		MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam1.str().c_str(),nam2.str().c_str());
+			// Convert to biomass using the metacommunity density
+			//
+			bioVol = ConvertToBio(dat, p.bioMax,p.bioMin);
+
+			// Print the biomass spectrum
+			PrintDenBio(den, p.bioMax,p.bioMin,fname,nam2.str().c_str());   
+
+			MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam1.str().c_str(),nam2.str().c_str());
+		}
+		
+		// Calculates Dq reordering species from the most abundant as 1 (SRS)
+		//
+		ostringstream nam3;
+		nam3 << fname << "mfOrd.txt" << ends;
+
+		if(Reordering(dat,den))
+			MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam3.str().c_str(),nam2.str().c_str());
+		
+		// Calculates Dq of SAD 
+		//
+		ostringstream nam4;
+		nam4 << fname << "mfSAD.txt" << ends;
+		
+		Convert(dat);
+		MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam4.str().c_str(),nam2.str().c_str(),'E');
 	}
+	
 	dout << "\t" << bioVol << "\t" << bioVol/tot << endl;
 
 	dout.close();
-	
-	// Calculates Dq reordering species from the most abundant as 1 (SRS)
-	//
-	ostringstream nam3;
-	nam3 << fname << "mfOrd.txt" << ends;
-
-	if(Reordering(dat,den))
-		MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam3.str().c_str(),nam2.str().c_str());
-	
-	// Calculates Dq of SAD 
-	//
-	ostringstream nam4;
-	nam4 << fname << "mfSAD.txt" << ends;
-	
-	Convert(dat);
-	MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,nam4.str().c_str(),nam2.str().c_str(),'E');
 
 /*
 	// Calculates Dq with q.sed for the most abundant specie

@@ -92,6 +92,8 @@ It has the simulation's parameters and select the outputs the model will calcula
 		
 8.	*pomac*		: (S/N) Takes parameters line by line from a file named pomac.lin and does a special output coded in the function IPSNeutral::PrintPomac.
 
+9.	*minProp*	: If >0 calculates H and richness for the species that have a proportion in density greater than *minProp*, if = 0 doesn't calculate additional H & richness. 
+
 9.	*bioCalc*	: Calculates biomass based in an inverse Damuth rule, M=aN^b  between a range of biomasses. The biomass is added to any other outputs requested.
 
 10. *bioMax*	: Maximun biomass

@@ -256,6 +256,11 @@ int ReadParms(char * pFile, IPSParms &p)
 	    {
     		parms >> p.bioMin;
 		}
+		else if(buff=="minProp") // Minimun for calculation proportion for calculation of Richnes and H
+	    {
+    		parms >> p.minProp;
+		}
+
 		else if( !buff.empty() )
 		{
 			cerr << "Error in input file, unrecognized token" << endl;

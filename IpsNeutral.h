@@ -72,6 +72,7 @@ struct IPSParms
 	float minBox;
 	float maxBox;
 	float deltaBox;
+	float minProp;
 	char bioCalc;
 	float bioMax;
 	float bioMin;
