@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
 	{
 		if( p.pomac )
 		{
-			if( !ca.ReadLineParms( "pomac.lin" ) ) // si no hay mas lineas de parametros no hace mas simulaciones
+			if( !ca.ReadLineParms( p.pomacFile.c_str() ) ) // si no hay mas lineas de parametros no hace mas simulaciones
 				break;
 			pvals = ca.PrintLineParms();
 			ca.InitParms(p.pomac);
@@ -206,6 +206,10 @@ int ReadParms(char * pFile, IPSParms &p)
    	    else if(buff=="pomac") // Lee parametros tipo pomac
 	    {
     		parms >> p.pomac;
+	    }
+	    else if(buff=="pomacFile")
+	    {
+    		parms >> p.pomacFile;
 	    }
 
 	    else if(buff=="de") // Calcula densidad por especie S/N

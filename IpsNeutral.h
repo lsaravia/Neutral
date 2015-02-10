@@ -63,6 +63,7 @@ struct IPSParms
 	unsigned long inter;
 	unsigned long init;
 	bool pomac;
+	string pomacFile;
 	int modType;
 	char de;
 	char sa;
