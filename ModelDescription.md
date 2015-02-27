@@ -90,7 +90,9 @@ It has the simulation's parameters and select the outputs the model will calcula
 
 16.	*deltaBox*	: The program uses powers of 2 intervals, but if you want to restric the number of intervals you can use this parameter.
 		
-8.	*pomac*		: (S/N) Takes parameters line by line from a file named pomac.lin and does a special output coded in the function IPSNeutral::PrintPomac.
+8.	*pomac*		: (S/N) Takes parameters line by line from a file named pomacFile.lin and does a special output coded in the function IPSNeutral::PrintPomac.
+
+9. *pomacFile*	: name fo the file to do multiple simulations
 
 9.	*minProp*	: If >0 calculates H and richness for the species that have a proportion in density greater than *minProp*, if = 0 doesn't calculate additional H & richness. 
 
