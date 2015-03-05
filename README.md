@@ -21,12 +21,6 @@ I am using the Gnu C++ (g++ v4.6.3) to compile it. For a crude and slow graphica
 
 You also need the code from https://github.com/lsaravia/mfsba if you want the multifractal spectra output otherwise you have to comment the calls to the function *MultifractalSBA* and the includes to *mf.h* header.
 
-### To Do
-
-* Verify that the parameter rates/probabilities used in the algorithm are consistent with mean field equations
-
-* Create a simulation parameter for the threshold of undetected species now fixed at 0.001
-
 ## Bibliography
 
 Tilman, D., 1994. Competition and biodiversity in spatially structured habitats. Ecology, 75(1), pp.2-16.
