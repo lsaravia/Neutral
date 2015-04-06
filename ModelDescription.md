@@ -102,6 +102,8 @@ It has the simulation's parameters and select the outputs the model will calcula
 
 11. *bioMin*	: Minimun biomass 
 
+12. *clusters*  : Calculates number of clustes and maximun cluster (only for pomac)
+
 ### File.sed
 
 File used for initial conditions or to save the state of the system

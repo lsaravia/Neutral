@@ -77,6 +77,7 @@ struct IPSParms
 	char bioCalc;
 	float bioMax;
 	float bioMin;
+	char clusters;
 };
 
 class IPSNeutral : public CABase
@@ -132,9 +133,10 @@ class IPSNeutral : public CABase
 
 	int SaveSeed( const char * fname);
 
-	int PStats(simplmat <double> &data, const char * outFile, const char * ident);
+	int PStats(simplmat <int> &data, const char * outFile, const char * ident);
 
 	int Convert(simplmat <double> &data);                                      // Convierte a simplmat
+	int Convert(simplmat <int> &data);                                      // Convierte a simplmat
 	int Convert(simplmat <double> &data, const int * species );
 	int Convert(simplmat <double> &data, const int specie );
 	int Reordering(simplmat <double> &newdata );

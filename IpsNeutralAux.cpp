@@ -643,6 +643,17 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 	
 	dout << "\t" << bioVol << "\t" << bioVol/tot << endl;
 
+	if(p.clusters=='S')
+	{
+		simplmat <int> dat;
+		Convert(dat);
+		ostringstream nam2;
+		nam2 << iname << "\t" << T << ends;
+		ostringstream nam3;
+		nam3 << fname << "CluSizes.txt" << ends;
+		PStats(dat, nam3.str().c_str() , nam2.str().c_str());
+
+	}
 	dout.close();
 
 /*

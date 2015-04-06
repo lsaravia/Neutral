@@ -264,6 +264,11 @@ int ReadParms(char * pFile, IPSParms &p)
 	    {
     		parms >> p.minProp;
 		}
+		else if(buff=="clusters") // number of clusters and cluster size of biggest patch
+	    {
+	    	parms >> p.clusters;
+			p.clusters = toupper( p.clusters );
+		}
 
 		else if( !buff.empty() )
 		{

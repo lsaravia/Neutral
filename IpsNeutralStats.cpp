@@ -1,5 +1,7 @@
 #include "IpsNeutral.h"
 #include "mf.h"
+#include "hk.h" 
+#include <fstream>      
 
 using namespace std;
 
@@ -38,6 +40,21 @@ int IPSNeutral::Convert(simplmat <double> &data)
 	return 1;
 }
 
+int IPSNeutral::Convert(simplmat <int> &data)
+{
+	int dx,dy;
+	dx = data.getRows();
+	dy = data.getCols();
+
+	if( dx!=DimX || dy!=DimY )
+		data.resize(DimX, DimY, 0.0);
+		
+	for(dy=0;dy<DimY; dy++)
+		for(dx=0;dx<DimX; dx++)
+			data(dx,dy) = C(dx,dy).Specie;
+
+	return 1;
+}
 
 // Converting to Biomass with using the inverse of Damuth exponent
 //                M=(N/a)^(-4/3) between a range bioMin & bioMax
@@ -320,8 +337,34 @@ int IPSNeutral::AddConst(simplmat <double> &data, const double aa )
 	return 1;
 }
 
-int IPSNeutral::PStats(simplmat <double> &data, const char * outFile, const char * ident)
+int IPSNeutral::PStats(simplmat <int> &data, const char * outFile, const char * ident)
 {
+    hoshen_kopelman c;
+    ofstream dout;
+    bool privez=false;
+    dout.open( outFile, ios::in );
+    if( !dout )
+            privez=true;
+
+    dout.close();
+    dout.clear();
+    dout.open( outFile, ios::app );
+    if( !dout )
+    {
+            cerr << "Cannot open output file.\n";
+            return 0;
+    }
+
+    vector<pair<int, unsigned int>> clusters = c.multiClusters(data,"max");
+
+    if(privez){
+            dout << ident << "\tnumClusters\tmaxClusterSize\n";
+    }
+    for(auto ites=clusters.begin(); ites!=clusters.end(); ++ites){
+        dout << ident << "\t" << ites->first << "\t" << ites->second << endl;
+        
+    }      
+
 	// return PatchStats(data,NumSpecies,outFile,ident);
 	return 0;
 }
