@@ -355,15 +355,23 @@ int IPSNeutral::PStats(simplmat <int> &data, const char * outFile, const char * 
             return 0;
     }
 
+    // With output=max multiClusters returns 2 pairs:
+    // the 1st with maxCluster the 2nd with total number of clusters
+    //
     vector<pair<int, unsigned int>> clusters = c.multiClusters(data,"max");
 
+
     if(privez){
-            dout << ident << "\tnumClusters\tmaxClusterSize\n";
+            dout << ident << "\tspecies\tmaxClusterSize\ttotalClusters\ttotalSpecies\n";
     }
-    for(auto ites=clusters.begin(); ites!=clusters.end(); ++ites){
-        dout << ident << "\t" << ites->first << "\t" << ites->second << endl;
+
+    //for(auto ites=clusters.begin(); ites!=clusters.end(); ++ites){
+    //dout << ident << "\t" << ites->first << "\t" << ites->second << endl;}
+
+    dout << ident << "\t" << clusters[0].first << "\t" << clusters[0].second 
+    	 << "\t" << clusters[1].second << "\t" << clusters[2].second << endl;
         
-    }      
+          
 
 	// return PatchStats(data,NumSpecies,outFile,ident);
 	return 0;

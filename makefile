@@ -19,13 +19,13 @@ I_DIRS=-I.. -I../../SpatialAnalysis/mfsba -I../../SpatialAnalysis -I../../Spatia
 
 #P_DEFS=-DGRAPHICS -DEXP_DISP 
 #P_DEFS=-DGRAPHICS -DUNIFORM_DISP
-P_DEFS=-DEXP_DISP -DHIERARCHICAL_CONT
+#P_DEFS=-DEXP_DISP -DHIERARCHICAL_CONT
 #P_DEFS=-DEXP_DISP -DHIERARCHICAL_CONT
 #P_DEFS=-DGRAPHICS -DPOWER_DISP -DRANGE_CHECKING   
-#P_DEFS=-DPOWER_DISP -DHIERARCHICAL_CONT
+P_DEFS=-DPOWER_DISP -DHIERARCHICAL_CONT
 
-CXXFLAGS = -O2 -Wall -std=gnu++0x $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
-#CXXFLAGS = -g -Wall -std=gnu++0x $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
+#CXXFLAGS = -O2 -Wall -std=gnu++0x $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
+CXXFLAGS = -g -Wall -std=gnu++0x $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
 
 
 #L = -lm -lgrx20S -lSDL $(X11LIBS)
@@ -62,4 +62,4 @@ mfSBA.o: mfSBA.cpp makefile
 
 RWFile.o: RWFile.cpp makefile 
 
-hk.o: hk.cpp hk.h
+hk.o: hk.cpp hk.h makefile
