@@ -362,14 +362,14 @@ int IPSNeutral::PStats(simplmat <int> &data, const char * outFile, const char * 
 
 
     if(privez){
-            dout << ident << "\tspecies\tmaxClusterSize\ttotalClusters\ttotalSpecies\n";
+            dout << ident << "\tSpecies\tMaxClusterSize\tTotalClusters\tTotalSpecies\tSpanningSpecies\n";
     }
 
     //for(auto ites=clusters.begin(); ites!=clusters.end(); ++ites){
     //dout << ident << "\t" << ites->first << "\t" << ites->second << endl;}
 
     dout << ident << "\t" << clusters[0].first << "\t" << clusters[0].second 
-    	 << "\t" << clusters[1].second << "\t" << clusters[2].second << endl;
+    	 << "\t" << clusters[1].second << "\t" << clusters[2].second << "\t" << clusters[3].first << endl;
         
           
 
