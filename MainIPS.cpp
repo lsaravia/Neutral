@@ -122,6 +122,30 @@ int main(int argc, char * argv[])
 								ca.MFStats(dat,q,p.minBox,p.maxBox,p.deltaBox,name.str().c_str(),nam1.str().c_str(),p.mfDim);
 							
 						}
+
+						if(p.clusters=='S')
+						{
+							simplmat <int> dat;
+							ca.Convert(dat);
+							ostringstream nam2;
+							nam2 << pvals.c_str() << "\t" << (i+1) << ends;
+							ostringstream nam3;
+							nam3 << p.baseName << "CluSizes.txt" << ends;
+							ca.PStats(dat, nam3.str().c_str() , nam2.str().c_str(),"max");
+
+						}
+
+						if(p.clusters=='A')
+						{
+							simplmat <int> dat;
+							ca.Convert(dat);
+							ostringstream nam2;
+							nam2 << pvals.c_str() << "\t" << (i+1) << ends;
+							ostringstream nam3;
+							nam3 << p.baseName << "CluSizesAll.txt" << ends;
+							ca.PStats(dat, nam3.str().c_str() , nam2.str().c_str(),"");
+
+						}
 					}
 				}
 

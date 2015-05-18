@@ -337,7 +337,7 @@ int IPSNeutral::AddConst(simplmat <double> &data, const double aa )
 	return 1;
 }
 
-int IPSNeutral::PStats(simplmat <int> &data, const char * outFile, const char * ident)
+int IPSNeutral::PStats(simplmat <int> &data, const char * outFile, const char * ident,const string & type)
 {
     hoshen_kopelman c;
     ofstream dout;
@@ -358,20 +358,29 @@ int IPSNeutral::PStats(simplmat <int> &data, const char * outFile, const char * 
     // With output=max multiClusters returns 2 pairs:
     // the 1st with maxCluster the 2nd with total number of clusters
     //
-    vector<pair<int, unsigned int>> clusters = c.multiClusters(data,"max");
+    vector<pair<int, unsigned int>> clusters = c.multiClusters(data,type);
 
+    if(type=="max"){
 
-    if(privez){
-            dout << ident << "\tSpecies\tMaxClusterSize\tTotalClusters\tTotalSpecies\tSpanningSpecies\n";
+	    if(privez){
+	            dout << ident << "\tSpecies\tMaxClusterSize\tTotalClusters\tTotalSpecies\tSpanningSpecies\n";
+	    }
+
+	    //for(auto ites=clusters.begin(); ites!=clusters.end(); ++ites){
+	    //dout << ident << "\t" << ites->first << "\t" << ites->second << endl;}
+
+	    dout << ident << "\t" << clusters[0].first << "\t" << clusters[0].second 
+	    	 << "\t" << clusters[1].second << "\t" << clusters[2].second << "\t" << clusters[3].first << endl;
+	        
     }
-
-    //for(auto ites=clusters.begin(); ites!=clusters.end(); ++ites){
-    //dout << ident << "\t" << ites->first << "\t" << ites->second << endl;}
-
-    dout << ident << "\t" << clusters[0].first << "\t" << clusters[0].second 
-    	 << "\t" << clusters[1].second << "\t" << clusters[2].second << "\t" << clusters[3].first << endl;
-        
-          
+    else
+    {
+	    if(privez){
+	            dout << ident << "\tSpecies\tClusterSize\n";
+	    }
+	    for(auto ites=clusters.begin(); ites!=clusters.end(); ++ites){
+	    dout << ident << "\t" << ites->first << "\t" << ites->second << endl;}
+    }
 
 	// return PatchStats(data,NumSpecies,outFile,ident);
 	return 0;

@@ -651,7 +651,19 @@ int  IPSNeutral::PrintPomac(IPSParms p, const char *fname,const char *iname)
 		nam2 << iname << "\t" << T << ends;
 		ostringstream nam3;
 		nam3 << fname << "CluSizes.txt" << ends;
-		PStats(dat, nam3.str().c_str() , nam2.str().c_str());
+		PStats(dat, nam3.str().c_str() , nam2.str().c_str(), "max");
+
+	}
+
+	if(p.clusters=='A')
+	{
+		simplmat <int> dat;
+		Convert(dat);
+		ostringstream nam2;
+		nam2 << iname << "\t" << T << ends;
+		ostringstream nam3;
+		nam3 << fname << "CluSizesAll.txt" << ends;
+		PStats(dat, nam3.str().c_str() , nam2.str().c_str(), "");
 
 	}
 	dout.close();

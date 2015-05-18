@@ -1,9 +1,9 @@
 gr N
 nRuns 1
 nEvals 200
-rndSeed 0
-inter 7
-init  1
+rndSeed 1
+inter 200
+init  200
 modType 3
 de S
 sa N

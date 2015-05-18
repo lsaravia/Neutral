@@ -133,7 +133,8 @@ class IPSNeutral : public CABase
 
 	int SaveSeed( const char * fname);
 
-	int PStats(simplmat <int> &data, const char * outFile, const char * ident);
+	int PStats(simplmat <int> &data, const char * outFile, const char * ident,const string & type);
+
 
 	int Convert(simplmat <double> &data);                                      // Convierte a simplmat
 	int Convert(simplmat <int> &data);                                      // Convierte a simplmat

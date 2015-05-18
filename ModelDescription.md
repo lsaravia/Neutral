@@ -102,8 +102,9 @@ It has the simulation's parameters and select the outputs the model will calcula
 
 11. *bioMin*	: Minimun biomass 
 
-12. *clusters*  : Calculates number of clustes and maximun cluster (only for pomac)
-
+12. *clusters*  : [S|A] S: Calculates the species with max cluster size, max cluster size, total mumber of clusters, total of species with max cluster, spanning species 
+						A: Calculates the sizes of clusters of all species, the first record is the spanning species, if there is no spanning species is 0, 0
+						
 ### File.sed
 
 File used for initial conditions or to save the state of the system
