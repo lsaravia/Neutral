@@ -380,6 +380,7 @@ int IPSNeutral::PStats(simplmat <int> &data, const char * outFile, const char * 
 	    }
 	    for(auto ites=clusters.begin(); ites!=clusters.end(); ++ites){
 	    dout << ident << "\t" << ites->first << "\t" << ites->second << endl;}
+	    dout << ident << "\t" << -1 << "\t" << -1 << endl;
     }
 
 	// return PatchStats(data,NumSpecies,outFile,ident);
