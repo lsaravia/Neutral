@@ -21,10 +21,10 @@ It was compiled using Gnu C++ (g++ v5.3.0) to compile it. For a crude and slow g
 
 You also need the code from: 
 	
-	1. <https://github.com/lsaravia/mfsba> if you want the multifractal spectra output otherwise you have to comment the calls to the function *MultifractalSBA* and the includes to *mf.h* header.
-	2. <https://github.com/lsaravia/Clusters> to calculate cluster statistics 
+1. <https://github.com/lsaravia/mfsba> if you want the multifractal spectra output otherwise you have to comment the calls to the function *MultifractalSBA* and the includes to *mf.h* header.
+2. <https://github.com/lsaravia/Clusters> to calculate cluster statistics 
 
-To compile under Windows there is a separate makefileWin.mak, you might have to modifiy the folders of the *mfsba* and *Clusters* sources.
+To compile under Windows there is a separate makefileWin.mak, you might have to modify the folders of the *mfsba* and *Clusters* sources.
 
 ## Bibliography
 
