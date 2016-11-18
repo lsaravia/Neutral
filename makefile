@@ -50,7 +50,7 @@ cabase.o: cabase.cpp cabase.hpp makefile
 
 bgi.o: bgi.cpp makefile
 
-IpsNeutral.o: IpsNeutral.cpp makefile IpsNeutral.h ran.hpp
+IpsNeutral.o: IpsNeutral.cpp makefile IpsNeutral.h ran.h
 
 IpsNeutralAux.o: IpsNeutralAux.cpp makefile IpsNeutral.h
 

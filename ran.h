@@ -1,4 +1,6 @@
 #include <cmath>
+#include <ctime>
+
 // Randon generator based on numerical recipes
 
 static float sqrarg;
