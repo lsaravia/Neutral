@@ -17,9 +17,14 @@ And three dispersal kernels
 2. Exponential
 3. Inverse power 
 
-I am using the Gnu C++ (g++ v4.6.3) to compile it. For a crude and slow graphical output you will need the X11 SDL development libraries and the GRX graphics library http://grx.gnu.de/grx246um.htm
+It was compiled using Gnu C++ (g++ v5.3.0) to compile it. For a crude and slow graphical output you will need the X11 SDL development libraries and the GRX graphics library http://grx.gnu.de/grx246um.htm
 
-You also need the code from https://github.com/lsaravia/mfsba if you want the multifractal spectra output otherwise you have to comment the calls to the function *MultifractalSBA* and the includes to *mf.h* header.
+You also need the code from: 
+	
+	1. <https://github.com/lsaravia/mfsba> if you want the multifractal spectra output otherwise you have to comment the calls to the function *MultifractalSBA* and the includes to *mf.h* header.
+	2. <https://github.com/lsaravia/Clusters> to calculate cluster statistics 
+
+To compile under Windows there is a separate makefileWin.mak, you might have to modifiy the folders of the *mfsba* and *Clusters* sources.
 
 ## Bibliography
 
