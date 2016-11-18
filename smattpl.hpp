@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
+
 
 #ifdef __GNUC__
 //#include "fortify.h"
