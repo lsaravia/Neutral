@@ -22,9 +22,18 @@ It was compiled using Gnu C++ (g++ v5.3.0) to compile it. For a crude and slow g
 You also need the code from: 
 	
 1. <https://github.com/lsaravia/mfsba> if you want the multifractal spectra output otherwise you have to comment the calls to the function *MultifractalSBA* and the includes to *mf.h* header.
-2. <https://github.com/lsaravia/Clusters> to calculate cluster statistics 
+2. <https://github.com/lsaravia/Clusters> to calculate cluster statistics. 
 
 To compile under Windows there is a separate makefileWin.mak, you might have to modify the folders of the *mfsba* and *Clusters* sources.
+
+
+## Citation
+
+If you use the model please cite:
+
+1. Saravia, L.A. (2015). A new method to analyse species abundances in space using generalized dimensions. Methods Ecol. Evol., 6, 1298–1310
+
+2. Saravia L.A. (2014) Neutral: A sofwtware to simulate spatially explicit neutral/hierarchical models.  <http://dx.doi.org/10.6084/m9.figshare.969692>.
 
 ## Bibliography
 
