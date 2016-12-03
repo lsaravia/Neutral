@@ -29,7 +29,7 @@ CXXFLAGS = -O2 -Wall -std=gnu++0x $(I_DIRS) $(X11INCS)  $(SDLDEFS) $(P_DEFS)
 
 
 #L = -lm -lgrx20S -lSDL $(X11LIBS)
-L = -lm 
+L = -lm -static-libgcc -static-libstdc++
 
 
 O=bgi.o cabase.o IpsNeutral.o mfSBA.o RWFile.o\
