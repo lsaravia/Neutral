@@ -74,7 +74,7 @@ It has the simulation's parameters and select the outputs the model will calcula
 7. *modType*	: 1=Non saturated neutral model, 2=Neutral saturated (zero-sum) model, 
 	 	3=Hierarchical non saturated, 4=Hierarchical saturated.
 
-8.	*de*		: Output species density, richness, and Shannon index. 
+8.	*de*		: Output species density, richness, and Shannon index (natural logarithm). 
 
 9.	*sa*		: Save state of the model in sed format each [inter] steps from [init] time  
 
