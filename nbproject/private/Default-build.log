@@ -1,0 +1,61 @@
+g++ -O2 -Wall -std=gnu++0x -I.. -I../../SpatialAnalysis/mfsba -I../../SpatialAnalysis -I../../SpatialAnalysis/Clusters -I/usr/X11R6/include  -D__XWIN__ -DEXP_DISP -DHIERARCHICAL_CONT   -c -o bgi.o ../bgi.cpp
+g++ -O2 -Wall -std=gnu++0x -I.. -I../../SpatialAnalysis/mfsba -I../../SpatialAnalysis -I../../SpatialAnalysis/Clusters -I/usr/X11R6/include  -D__XWIN__ -DEXP_DISP -DHIERARCHICAL_CONT   -c -o cabase.o ../cabase.cpp
+g++ -O2 -Wall -std=gnu++0x -I.. -I../../SpatialAnalysis/mfsba -I../../SpatialAnalysis -I../../SpatialAnalysis/Clusters -I/usr/X11R6/include  -D__XWIN__ -DEXP_DISP -DHIERARCHICAL_CONT   -c -o IpsNeutral.o IpsNeutral.cpp
+In file included from IpsNeutral.h:7:0,
+                 from IpsNeutral.cpp:7:
+ran.h: In member function ‘double Normaldev::dev()’:
+ran.h:92:69: warning: operation on ‘sqrarg’ may be undefined [-Wsequence-point]
+   } while (q > 0.27597 && (q > 0.27846 || SQR(v) > -4.*log(u)*SQR(u)));
+                                                                     ^
+ran.h:92:69: warning: operation on ‘sqrarg’ may be undefined [-Wsequence-point]
+In file included from IpsNeutral.cpp:7:0:
+IpsNeutral.h: At global scope:
+IpsNeutral.h:80:7: error: expected ‘;’ at end of member declaration
+  char clusters
+       ^
+IpsNeutral.cpp: In destructor ‘virtual IPSNeutral::~IPSNeutral()’:
+IpsNeutral.cpp:23:10: warning: deleting object of polymorphic class type ‘SpecieNeutral’ which has non-virtual destructor might cause undefined behaviour [-Wdelete-non-virtual-dtor]
+   delete Sp;
+          ^
+IpsNeutral.cpp: In member function ‘virtual void IPSNeutral::EvalCell(int, int)’:
+IpsNeutral.cpp:112:16: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for(i=1; i<=NumSpecies; i++)
+                ^
+IpsNeutral.cpp: In member function ‘void IPSNeutral::EvalCellZero(int, int)’:
+IpsNeutral.cpp:174:16: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for(i=1; i<=NumSpecies; i++)
+                ^
+IpsNeutral.cpp:208:17: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for(i=1; i<=NumSpecies; i++)
+                 ^
+IpsNeutral.cpp: In member function ‘void IPSNeutral::EvalCellHierarchy(int, int)’:
+IpsNeutral.cpp:251:16: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for(i=1; i<=NumSpecies; i++)
+                ^
+IpsNeutral.cpp:287:17: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for(i=1; i<=NumSpecies; i++)
+                 ^
+IpsNeutral.cpp: In member function ‘void IPSNeutral::EvalCellZeroHierarchy(int, int)’:
+IpsNeutral.cpp:354:16: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for(i=1; i<=NumSpecies; i++)
+                ^
+IpsNeutral.cpp:389:17: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for(i=1; i<=NumSpecies; i++)
+                 ^
+IpsNeutral.cpp:419:17: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for(i=1; i<=NumSpecies; i++)
+                 ^
+IpsNeutral.cpp: In member function ‘void IPSNeutral::InitParms(bool)’:
+IpsNeutral.cpp:474:15: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   for(i=1; i<=NumSpecies; i++ )
+               ^
+IpsNeutral.cpp:481:16: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for(i=1; i<=NumSpecies; i++ )
+                ^
+IpsNeutral.cpp:487:19: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   for(int i=1; i<=NumSpecies; i++ )
+                   ^
+IpsNeutral.cpp:491:15: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   for(i=2; i<=NumSpecies; i++)     // Probabilidad acumulada 
+               ^
+make: *** [IpsNeutral.o] Error 1
